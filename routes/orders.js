@@ -3,7 +3,7 @@ var router = express.Router();
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var url = 'mongodb://localhost/store';
+var url = 'mongodb://heroku_jsh7sdv9:qrmfuj00s9onih7ohou9dtpo90@ds025742.mlab.com:25742/heroku_jsh7sdv9';
 /**
  * @api {get} /api/orders/ Get all Orders
  * @apiName GetAllOrders
