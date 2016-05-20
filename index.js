@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var users = require('./routes/users.js');
-var products = require('./routes/products.js');
+var exercises = require('./routes/exercises.js');
 var orders = require('./routes/orders.js');
 
 app.use(express.static('public'));
@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use('/api/', users);
-app.use('/api/', products);
+app.use('/api/', exercises);
 app.use('/api/', orders);
 
-app.listen(process.env.PORT ||3000);
+app.listen(process.env.PORT || 3000);

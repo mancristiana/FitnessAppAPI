@@ -3,20 +3,20 @@ var router = express.Router();
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var url = 'mongodb://localhost/store';
+var url = 'mongodb://man.cristiana1@gmail.com:Pw1234@ds025792.mlab.com:25792/fitnessdb';
 
 /**
- * @api {get} /api/products/ Get all Products
- * @apiName GetAllProducts
- * @apiGroup Products
+ * @api {get} /api/exercises/ Get all Exercises
+ * @apiName GetAllExercises
+ * @apiGroup Exercises
  * @apiVersion 0.0.2
  *
- * @apiSuccess {String} make Make of the Product.
- * @apiSuccess {String} name  name of the Product.
- * @apiSuccess {String} color Color of the Product.
- * @apiSuccess {Number} price Number of the Product.
- * @apiSuccess {Array} size Sizes of the Product.
- * @apiSuccess {Object} details Details of the Product.
+ * @apiSuccess {String} make Make of the Exercise.
+ * @apiSuccess {String} name  name of the Exercise.
+ * @apiSuccess {String} color Color of the Exercise.
+ * @apiSuccess {Number} price Number of the Exercise.
+ * @apiSuccess {Array} size Sizes of the Exercise.
+ * @apiSuccess {Object} details Details of the Exercise.
  *
  * @apiSuccess (Success 304) 304 Not Modified
  *
@@ -40,13 +40,13 @@ var url = 'mongodb://localhost/store';
  * @apiSuccessExample {json} Success-Response (304):
  *     HTTP/1.1 304 Not Modified
  *
- * @apiSampleRequest http://localhost:3000/api/products/
+ * @apiSampleRequest http://localhost:3000/api/exercises/
  *
  * @apiError (Error 5xx) 500 Internal Server Error 
  *
  */
 
-router.route('/products/')
+router.route('/exercises/')
     .get(function(req, res) {
 
         MongoClient.connect(url, function(err, db) {
@@ -57,7 +57,7 @@ router.route('/products/')
                     'error': 'Internal Server Error'
                 });
             } else {
-                var collection = db.collection('products');
+                var collection = db.collection('exercises');
                 collection.find().toArray(function(err, result) {
 
                     if (err) {
@@ -76,9 +76,9 @@ router.route('/products/')
         });
     })
     /**
-     * @api {post} /api/products/ Create Product
-     * @apiName createProduct
-     * @apiGroup Products
+     * @api {post} /api/Exercises/ Create Exercise
+     * @apiName createExercise
+     * @apiGroup Exercises
      * @apiVersion 0.0.2
      * 
      * @apiParamExample {json} Post-Example:
@@ -97,13 +97,13 @@ router.route('/products/')
      *       }
      *     }
      *
-     * @apiSuccess (Success 201) 201 Product Created
+     * @apiSuccess (Success 201) 201 Exercise Created
      *
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 201 Created 
-     *     Location : /api/products/<ObjectId>
+     *     Location : /api/Exercises/<ObjectId>
      *     {
-     *       "message": "product added"
+     *       "message": "Exercise added"
      *     }
      *     
      * @apiError 400 Bad Request <br>Wrongly formated <code>json</code> was sent.
@@ -120,7 +120,7 @@ router.route('/products/')
                     'error': 'Internal Server Error'
                 });
             } else {
-                var collection = db.collection('products');
+                var collection = db.collection('exercises');
 
                 collection.insert(req.body, function(err, result) {
 
@@ -134,9 +134,9 @@ router.route('/products/')
                         });
                     } else {
                         res.status(201);
-                        res.location('/api/products/' + result.insertedIds.toString());
+                        res.location('/api/exercises/' + result.insertedIds.toString());
                         res.json({
-                            "message": "product added"
+                            "message": "exercise added"
                         });
                     }
                     db.close();
@@ -149,19 +149,19 @@ router.route('/products/')
     });
 
 /**
- * @api {get} /api/products/:id Get Product
- * @apiName GetProduct
- * @apiGroup Products
+ * @api {get} /api/exercises/:id Get Exercise
+ * @apiName GetExercise
+ * @apiGroup Exercises
  * @apiVersion 0.0.2
  *
- * @apiParam {ObjectId} id Products unique ID.
+ * @apiParam {ObjectId} id Exercises unique ID.
  *
- * @apiSuccess {String} make Make of the Product.
- * @apiSuccess {String} name  name of the Product.
- * @apiSuccess {String} color Color of the Product.
- * @apiSuccess {Number} price Number of the Product.
- * @apiSuccess {Array} size Sizes of the Product.
- * @apiSuccess {Object} details Details of the Product.
+ * @apiSuccess {String} make Make of the Exercise.
+ * @apiSuccess {String} name  name of the Exercise.
+ * @apiSuccess {String} color Color of the Exercise.
+ * @apiSuccess {Number} price Number of the Exercise.
+ * @apiSuccess {Array} size Sizes of the Exercise.
+ * @apiSuccess {Object} details Details of the Exercise.
  *
  * @apiSuccess (Success 304) 304 Not Modified
  *  
@@ -185,15 +185,15 @@ router.route('/products/')
  * @apiSuccessExample {json} Success-Response (304):
  *     HTTP/1.1 304 Not Modified
  *
- * @apiSampleRequest /api/products/:id
+ * @apiSampleRequest /api/exercises/:id
  *
- * @apiError 404 Product Not Found
+ * @apiError 404 Exercise Not Found
  * @apiError 400 Bad Request <br>Wrongly formated <code>id</code> was sent.
  *
  * @apiError (Error 5xx) 500 Internal Server Error 
  */
 
-router.route('/products/:id')
+router.route('/exercises/:id')
     .get(function(req, res) {
 
         MongoClient.connect(url, function(err, db) {
@@ -203,7 +203,7 @@ router.route('/products/:id')
                 });
             };
 
-            var collection = db.collection('products');
+            var collection = db.collection('exercises');
             try {
                 collection.findOne({
                     '_id': ObjectID(req.params.id)
@@ -235,23 +235,23 @@ router.route('/products/:id')
     })
 
 /**
- * @api {put} /api/products/:id Update Product
- * @apiName ProductUser
- * @apiGroup Products
+ * @api {put} /api/exercises/:id Update Exercise
+ * @apiName ExerciseUser
+ * @apiGroup Exercises
  * @apiVersion 0.0.2
  *
- * @apiParam {ObjectId} id Product unique ID.
+ * @apiParam {ObjectId} id Exercise unique ID.
  *
- * @apiSuccess (Success 201) 201 Product Created
+ * @apiSuccess (Success 201) 201 Exercise Created
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 201 Created 
- *     Location : /api/products/<ObjectId>
+ *     Location : /api/exercises/<ObjectId>
  *     {
- *       "message": "Product updated"
+ *       "message": "Exercise updated"
  *     }
  *     
- * @apiError 404 Product Not Found
+ * @apiError 404 Exercise Not Found
  * @apiError 400 Bad Request <br>Wrongly formated <code>json</code> or <code>id</code> was sent.
  *
  * @apiError (Error 5xx) 500 Internal Server Error
@@ -260,7 +260,7 @@ router.route('/products/:id')
 .put(function(req, res) {
         MongoClient.connect(url, function(err, db) {
 
-            var collection = db.collection('products');
+            var collection = db.collection('exercises');
 
             collection.update({
                 '_id': ObjectID(req.params.id)
@@ -269,28 +269,28 @@ router.route('/products/:id')
             }, function(err, result) {
                 // response to the browser
                 res.status(201);
-                res.location(/api/products / +ObjectID(req.params.id));
+                res.location(/api/exercises / +ObjectID(req.params.id));
                 res.json({
-                    "message": "product edited"
+                    "message": "exercise edited"
                 });
                 db.close();
             });
         });
     })
     /**
-     * @api {delete} /api/products/:id Delete Product
-     * @apiName DeleteProduct
-     * @apiGroup Products
+     * @api {delete} /api/exercises/:id Delete Exercise
+     * @apiName DeleteExercise
+     * @apiGroup Exercises
      * @apiVersion 0.0.2
      *
-     * @apiParam {ObjectId} id Products unique ID.
+     * @apiParam {ObjectId} id Exercises unique ID.
      *
      * @apiSuccess (Success 204) 204 No Content
      *
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 204 No Content
      *
-     * @apiError 404 Product Not Found
+     * @apiError 404 Exercise Not Found
      * @apiError 400 Bad Request <br>A wrong formated <code>id</code> was sent
      *
      * @apiError (Error 5xx) 500 Internal Server Error 
@@ -300,13 +300,13 @@ router.route('/products/:id')
 
         MongoClient.connect(url, function(err, db) {
 
-            var collection = db.collection('products');
+            var collection = db.collection('exercises');
             collection.remove({
                 '_id': ObjectID(req.params.id)
             }, function(err, result) {
                 res.status(202);
                 res.json({
-                    'message': 'product deleted'
+                    'message': 'exercise deleted'
                 });
                 db.close();
             });

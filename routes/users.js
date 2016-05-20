@@ -3,7 +3,7 @@ var router = express.Router();
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var url = 'mongodb://localhost/store';
+var url = 'mongodb://man.cristiana1@gmail.com:Pw1234@ds025792.mlab.com:25792/fitnessdb';
 
 /**
  * @api {get} /api/users/ Get all Users
