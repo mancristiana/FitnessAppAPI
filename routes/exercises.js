@@ -269,7 +269,7 @@ router.route('/exercises/:id')
             }, function(err, result) {
                 // response to the browser
                 res.status(201);
-                res.location(/api/exercises / +ObjectID(req.params.id));
+                res.location('/api/exercises/' + ObjectID(req.params.id));
                 res.json({
                     "message": "exercise edited"
                 });

@@ -1,1 +1,13 @@
-{  "name": "myfirstapi",  "version": "1.0.1",  "description": "Continuation from 07_myFirstApi",  "sampleUrl": false,  "apidoc": "0.2.0",  "generator": {    "name": "apidoc",    "time": "2015-10-29T09:36:31.714Z",    "url": "http://apidocjs.com",    "version": "0.13.1"  }}
+{
+  "name": "FitnessAppAPI",
+  "version": "1.0.1",
+  "description": "Documentation",
+  "sampleUrl": false,
+  "apidoc": "0.2.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2016-05-20T10:55:43.099Z",
+    "url": "http://apidocjs.com",
+    "version": "0.16.1"
+  }
+}
