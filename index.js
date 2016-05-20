@@ -6,6 +6,18 @@ var users = require('./routes/users.js');
 var exercises = require('./routes/exercises.js');
 var orders = require('./routes/orders.js');
 
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+ });
+// Add headers
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({
