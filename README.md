@@ -1,10 +1,10 @@
-# 12 My First Api FINAL
+# Fitness App API
 
-Remember that this solution has no value, if you don´t at least try to understand what i did, and then try to do it yourself aftervards. 
+This is a back end solution for Fitness App project. 
 
 ## Instalation
 
-<pre>git clone https://github.com/keanodejs/08_myFirstApi_FINAL.git</pre>
+<pre>git clone https://mancristiana@bitbucket.org/mancristiana/fitnessappnodejs.git</pre>
 
 and then run 
 
