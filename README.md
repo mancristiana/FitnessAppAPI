@@ -4,7 +4,8 @@ This is a back end solution for Fitness App project.
 
 ## Instalation
 
-<pre>git clone https://mancristiana@bitbucket.org/mancristiana/fitnessappnodejs.git</pre>
+<pre>git clone https://mancristiana@bitbucket.org/mancristiana/fitnessappnodejs.git
+</pre>
 
 and then run 
 
