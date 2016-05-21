@@ -1,11 +1,120 @@
 [
   {
+    "type": "post",
+    "url": "/exercises",
+    "title": "Create Exercise",
+    "name": "CreateExercise",
+    "group": "Exercises",
+    "version": "0.0.1",
+    "description": "<p>This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the following parameters.</p>",
+    "parameter": {
+      "fields": {
+        "RequestedFields": [
+          {
+            "group": "RequestedFields",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the Exercise.</p>"
+          },
+          {
+            "group": "RequestedFields",
+            "type": "Number",
+            "optional": false,
+            "field": "duration",
+            "description": "<p>Amount of time measured in minutes that the Exercise takes.</p>"
+          },
+          {
+            "group": "RequestedFields",
+            "type": "Array",
+            "optional": false,
+            "field": "equipment",
+            "description": "<p>String Array of various equipment needed for the Exercise.</p>"
+          },
+          {
+            "group": "RequestedFields",
+            "type": "Number",
+            "optional": false,
+            "field": "burntQ",
+            "description": "<p>Number of calories burnt by performing the Exercise.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Post-Example:",
+          "content": "{\n    name: \"Air Bike\",\n    duration: 5,\n    equipment: [\n        \"mat\"\n    ],\n    burntQ: 1200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 201": [
+          {
+            "group": "Success 201",
+            "optional": false,
+            "field": "201",
+            "description": "<p>Exercise Created</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 201 Created \nLocation : /api/Exercises/<ObjectId>\n{\n  'message': 'Exercise added'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "404",
+            "description": "<p>Exercise not Found</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request <br>Wrongly formated <code>json</code> was sent.</p>"
+          }
+        ],
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Not Found\n{\n  'error': 'ExerciseNotFound'\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/exercises.js",
+    "groupTitle": "Exercises"
+  },
+  {
     "type": "delete",
-    "url": "/api/exercises/:id",
+    "url": "/exercises:id",
     "title": "Delete Exercise",
     "name": "DeleteExercise",
     "group": "Exercises",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -68,12 +177,203 @@
     "groupTitle": "Exercises"
   },
   {
-    "type": "put",
-    "url": "/api/exercises/:id",
-    "title": "Update Exercise",
-    "name": "ExerciseUser",
+    "type": "get",
+    "url": "/exercises",
+    "title": "Request all Exercises",
+    "name": "GetAllExercises",
     "group": "Exercises",
-    "version": "0.0.2",
+    "version": "0.0.1",
+    "description": "<p>This request returns all exercises which are by default available for the user. This does not include user custom made exercises.</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the Exercise.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "duration",
+            "description": "<p>Amount of time measured in minutes that the Exercise takes.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "equipment",
+            "description": "<p>String Array of various equipment needed for the Exercise.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "burntQ",
+            "description": "<p>Number of calories burnt by performing the Exercise.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        _id: \"573ec098e85f5601f611322b\",\n        name: \"Push Up\",\n        duration: 3,\n        equipment: [\n            \"steady floor\"\n        ],\n        burntQ: 1234\n    },\n    {    \n        _id: \"573ec075e85f5601f611322a\",\n        name: \"Rope Jump\",\n        duration: 5,\n        equipment: [\n            \"steady floor\",\n            \"jumping rope\",\n            \"jumping sneakers\"\n        ],\n        burntQ: 2300\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/exercises.js",
+    "groupTitle": "Exercises"
+  },
+  {
+    "type": "get",
+    "url": "/exercises:id",
+    "title": "Get Exercise",
+    "name": "GetExercise",
+    "group": "Exercises",
+    "version": "0.0.1",
+    "description": "<p>This request returns the exercise specified by the unique ID in the request URL</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "ObjectId",
+            "optional": false,
+            "field": "id",
+            "description": "<p>The unique ID of the Exercise.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the Exercise.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "duration",
+            "description": "<p>Amount of time measured in minutes that the Exercise takes.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "equipment",
+            "description": "<p>String Array of various equipment needed for the Exercise.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "burntQ",
+            "description": "<p>Number of calories burnt by performing the Exercise.</p>"
+          }
+        ],
+        "Success 2xx": [
+          {
+            "group": "Success 2xx",
+            "optional": false,
+            "field": "200",
+            "description": "<p>OK</p>"
+          }
+        ],
+        "Success 3xx": [
+          {
+            "group": "Success 3xx",
+            "optional": false,
+            "field": "304",
+            "description": "<p>Not Modified</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    _id: \"573ec098e85f5601f611322b\",\n    name: \"Push Up\",\n    duration: 3,\n    equipment: [\n        \"steady floor\"\n    ],\n    burntQ: 1234\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response (304):",
+          "content": "HTTP/1.1 304 Not Modified",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "404",
+            "description": "<p>Exercise Not Found</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request <br>Wrongly formated <code>id</code> was sent.</p>"
+          }
+        ],
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/exercises.js",
+    "groupTitle": "Exercises"
+  },
+  {
+    "type": "put",
+    "url": "/exercises/:id",
+    "title": "Update Exercise",
+    "name": "UpdateExercise",
+    "group": "Exercises",
+    "version": "0.0.1",
+    "description": "<p>This request updates an existing exercise using the json body provided and the _id parameter specified in the request URL. For consistency the json may include keys like in the example below.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -85,285 +385,16 @@
             "description": "<p>Exercise unique ID.</p>"
           }
         ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 201": [
-          {
-            "group": "Success 201",
-            "optional": false,
-            "field": "201",
-            "description": "<p>Exercise Created</p>"
-          }
-        ]
       },
       "examples": [
         {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created \nLocation : /api/exercises/<ObjectId>\n{\n  \"message\": \"Exercise updated\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "404",
-            "description": "<p>Exercise Not Found</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>Wrongly formated <code>json</code> or <code>id</code> was sent.</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/exercises.js",
-    "groupTitle": "Exercises"
-  },
-  {
-    "type": "get",
-    "url": "/api/exercises/",
-    "title": "Get all Exercises",
-    "name": "GetAllExercises",
-    "group": "Exercises",
-    "version": "0.0.2",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "make",
-            "description": "<p>Make of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "name",
-            "description": "<p>name of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "color",
-            "description": "<p>Color of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "price",
-            "description": "<p>Number of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Array",
-            "optional": false,
-            "field": "size",
-            "description": "<p>Sizes of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "details",
-            "description": "<p>Details of the Exercise.</p>"
-          }
-        ],
-        "Success 304": [
-          {
-            "group": "Success 304",
-            "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n   \"make\" : \"Burton Menswear London\",\n   \"name\" : \"Print T-shirt\",\n   \"color\" : \"white\",\n   \"price\" : 16,\n   \"size\" : [\"small\", \"medium\", \"large\", \"x-large\"],\n   \"details\" : {\n           \"length\" : \"standard\",\n           \"fit\" : \"normal\",\n           \"fabric\" : \"jersey\",\n           \"Neckline\" : \"Crew neck\",\n           \"Total length\" : \"28.0\\\"  (Size M)\"\n   }\n }",
+          "title": "Edit-All-Example:",
+          "content": "{\n    name: \"Air Bike\",\n    duration: 4,\n    equipment: [\n        \"mat\"\n    ],\n    burntQ: 1200\n}",
           "type": "json"
         },
         {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
-          "type": "json"
-        }
-      ]
-    },
-    "sampleRequest": [
-      {
-        "url": "http://localhost:3000/api/exercises/"
-      }
-    ],
-    "error": {
-      "fields": {
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/exercises.js",
-    "groupTitle": "Exercises"
-  },
-  {
-    "type": "get",
-    "url": "/api/exercises/:id",
-    "title": "Get Exercise",
-    "name": "GetExercise",
-    "group": "Exercises",
-    "version": "0.0.2",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "ObjectId",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Exercises unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "make",
-            "description": "<p>Make of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "name",
-            "description": "<p>name of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "color",
-            "description": "<p>Color of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "price",
-            "description": "<p>Number of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Array",
-            "optional": false,
-            "field": "size",
-            "description": "<p>Sizes of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "details",
-            "description": "<p>Details of the Exercise.</p>"
-          }
-        ],
-        "Success 304": [
-          {
-            "group": "Success 304",
-            "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n   \"make\" : \"Burton Menswear London\",\n   \"name\" : \"Print T-shirt\",\n   \"color\" : \"white\",\n   \"price\" : 16,\n   \"size\" : [\"small\", \"medium\", \"large\", \"x-large\"],\n   \"details\" : {\n           \"length\" : \"standard\",\n           \"fit\" : \"normal\",\n           \"fabric\" : \"jersey\",\n           \"Neckline\" : \"Crew neck\",\n           \"Total length\" : \"28.0\\\"  (Size M)\"\n   }\n }",
-          "type": "json"
-        },
-        {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
-          "type": "json"
-        }
-      ]
-    },
-    "sampleRequest": [
-      {
-        "url": "/api/exercises/:id"
-      }
-    ],
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "404",
-            "description": "<p>Exercise Not Found</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>Wrongly formated <code>id</code> was sent.</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/exercises.js",
-    "groupTitle": "Exercises"
-  },
-  {
-    "type": "post",
-    "url": "/api/Exercises/",
-    "title": "Create Exercise",
-    "name": "createExercise",
-    "group": "Exercises",
-    "version": "0.0.2",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Post-Example:",
-          "content": "{\n   \"make\" : \"Burton Menswear London\",\n   \"name\" : \"Print T-shirt\",\n   \"color\" : \"white\",\n   \"price\" : 16,\n   \"size\" : [\"small\", \"medium\", \"large\", \"x-large\"],\n   \"details\" : {\n           \"length\" : \"standard\",\n           \"fit\" : \"normal\",\n           \"fabric\" : \"jersey\",\n           \"Neckline\" : \"Crew neck\",\n           \"Total length\" : \"28.0\\\"  (Size M)\"\n   }\n }",
+          "title": "Edit-Some-Example:",
+          "content": "{\n    name: \"Air Bike\",\n    duration: 4\n}",
           "type": "json"
         }
       ]
@@ -375,14 +406,14 @@
             "group": "Success 201",
             "optional": false,
             "field": "201",
-            "description": "<p>Exercise Created</p>"
+            "description": "<p>Exercise Edited</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created \nLocation : /api/Exercises/<ObjectId>\n{\n  \"message\": \"Exercise added\"\n}",
+          "content": "HTTP/1.1 201 Created \nLocation : /api/exercises/<ObjectId>\n{\n  \"message\": \"Exercise edited\"\n}",
           "type": "json"
         }
       ]
@@ -390,6 +421,12 @@
     "error": {
       "fields": {
         "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "404",
+            "description": "<p>Exercise not Found</p>"
+          },
           {
             "group": "Error 4xx",
             "optional": false,
@@ -405,421 +442,22 @@
             "description": "<p>Internal Server Error</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Not Found\n{\n  'error': 'ExerciseNotFound'\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
+          "type": "json"
+        }
+      ]
     },
     "filename": "routes/exercises.js",
     "groupTitle": "Exercises"
-  },
-  {
-    "type": "delete",
-    "url": "/api/orders/:id",
-    "title": "Delete Order",
-    "name": "DeleteOrder",
-    "group": "Orders",
-    "version": "0.0.3",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "ObjectId",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Order unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 204": [
-          {
-            "group": "Success 204",
-            "optional": false,
-            "field": "204",
-            "description": "<p>No Content</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 204 No Content",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "404",
-            "description": "<p>Product Not Found</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>A wrong formated <code>id</code> was sent</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/orders.js",
-    "groupTitle": "Orders"
-  },
-  {
-    "type": "get",
-    "url": "/api/orders/",
-    "title": "Get all Orders",
-    "name": "GetAllOrders",
-    "group": "Orders",
-    "version": "0.0.3",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "make",
-            "description": "<p>Make of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "name",
-            "description": "<p>name of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "color",
-            "description": "<p>Color of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "price",
-            "description": "<p>Number of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Array",
-            "optional": false,
-            "field": "size",
-            "description": "<p>Sizes of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "details",
-            "description": "<p>Details of the Product.</p>"
-          }
-        ],
-        "Success 304": [
-          {
-            "group": "Success 304",
-            "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n   \"make\" : \"Burton Menswear London\",\n   \"name\" : \"Print T-shirt\",\n   \"color\" : \"white\",\n   \"price\" : 16,\n   \"size\" : [\"small\", \"medium\", \"large\", \"x-large\"],\n   \"details\" : {\n           \"length\" : \"standard\",\n           \"fit\" : \"normal\",\n           \"fabric\" : \"jersey\",\n           \"Neckline\" : \"Crew neck\",\n           \"Total length\" : \"28.0\\\"  (Size M)\"\n   }\n }",
-          "type": "json"
-        },
-        {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
-          "type": "json"
-        }
-      ]
-    },
-    "sampleRequest": [
-      {
-        "url": "http://localhost:3000/api/products/"
-      }
-    ],
-    "error": {
-      "fields": {
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/orders.js",
-    "groupTitle": "Orders"
-  },
-  {
-    "type": "get",
-    "url": "/api/orders/:id",
-    "title": "Get Order",
-    "name": "GetOrder",
-    "group": "Orders",
-    "version": "0.0.3",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "ObjectId",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Orders unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "make",
-            "description": "<p>Make of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "name",
-            "description": "<p>name of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "color",
-            "description": "<p>Color of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "price",
-            "description": "<p>Number of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Array",
-            "optional": false,
-            "field": "size",
-            "description": "<p>Sizes of the Product.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "details",
-            "description": "<p>Details of the Product.</p>"
-          }
-        ],
-        "Success 304": [
-          {
-            "group": "Success 304",
-            "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n   \"make\" : \"Burton Menswear London\",\n   \"name\" : \"Print T-shirt\",\n   \"color\" : \"white\",\n   \"price\" : 16,\n   \"size\" : [\"small\", \"medium\", \"large\", \"x-large\"],\n   \"details\" : {\n           \"length\" : \"standard\",\n           \"fit\" : \"normal\",\n           \"fabric\" : \"jersey\",\n           \"Neckline\" : \"Crew neck\",\n           \"Total length\" : \"28.0\\\"  (Size M)\"\n   }\n }",
-          "type": "json"
-        },
-        {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
-          "type": "json"
-        }
-      ]
-    },
-    "sampleRequest": [
-      {
-        "url": "/api/orders/:id"
-      }
-    ],
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "404",
-            "description": "<p>Product Not Found</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>Wrongly formated <code>id</code> was sent.</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/orders.js",
-    "groupTitle": "Orders"
-  },
-  {
-    "type": "put",
-    "url": "/api/orders/:id",
-    "title": "Update Order",
-    "name": "UpdateOrder",
-    "group": "Orders",
-    "version": "0.0.3",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "ObjectId",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Order unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 201": [
-          {
-            "group": "Success 201",
-            "optional": false,
-            "field": "201",
-            "description": "<p>Order Created</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created \nLocation : /api/orders/<ObjectId>\n{\n  \"message\": \"Order updated\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "404",
-            "description": "<p>Order Not Found</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>Wrongly formated <code>json</code> or <code>id</code> was sent.</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/orders.js",
-    "groupTitle": "Orders"
-  },
-  {
-    "type": "post",
-    "url": "/api/orders/",
-    "title": "Create Order",
-    "name": "createOrder",
-    "group": "Orders",
-    "version": "0.0.3",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Post-Example:",
-          "content": "{\n   \"user\" : <ObjectId>,\n   \"products\" : [<ObjectId>, <ObjectId>, <ObjectId>]\n }",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "fields": {
-        "Success 201": [
-          {
-            "group": "Success 201",
-            "optional": false,
-            "field": "201",
-            "description": "<p>Order Created</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created \nLocation : /api/orders/<ObjectId>\n{\n  \"message\": \"product added\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>Wrongly formated <code>json</code> was sent.</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "filename": "routes/orders.js",
-    "groupTitle": "Orders"
   },
   {
     "type": "delete",
