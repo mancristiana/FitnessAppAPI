@@ -138,7 +138,7 @@ router.route('/')
     *
     */
 
-     .post(function(req, res) {
+    .post(function(req, res) {
 
         MongoClient.connect(url, function(err, db) {
 
@@ -176,7 +176,7 @@ router.route('/')
         });
     });
 
-router.route('/exercises/:id')
+    router.route('/:id')
 
     /**
     * @api {get} /exercises/id Get Exercise
@@ -228,7 +228,6 @@ router.route('/exercises/:id')
                 res.status(500).send({
                     "message": "Internal Server Error"
                 });
-                return;
             };
 
             var collection = db.collection('exercises');
@@ -242,7 +241,7 @@ router.route('/exercises/:id')
                         });
                     } else if (result === null) {
                         res.status(404).send({
-                            "message": "404 NotFound"
+                            "error": "Exercise Not Found"
                         });
                     } else {
                         res.status(200); //ok
@@ -258,7 +257,7 @@ router.route('/exercises/:id')
                 });
                 db.close();
             }
-
+            
         });
     })
 
