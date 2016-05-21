@@ -110,7 +110,7 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/exercises:id",
+    "url": "/exercises/id",
     "title": "Delete Exercise",
     "name": "DeleteExercise",
     "group": "Exercises",
@@ -249,7 +249,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/exercises:id",
+    "url": "/exercises/id",
     "title": "Get Exercise",
     "name": "GetExercise",
     "group": "Exercises",
@@ -368,7 +368,7 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/exercises/:id",
+    "url": "/exercises/id",
     "title": "Update Exercise",
     "name": "UpdateExercise",
     "group": "Exercises",
