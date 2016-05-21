@@ -1,4 +1,8 @@
 var express = require('express');
+
+//The top-level express object has a Router() method that creates a new router object.
+// Create a router object capable only of performing middleware and routing functions. 
+// It can be used as an argument to app.use() or as the argument to another router’s use() method.
 var router = express.Router();
 
 var MongoClient = require('mongodb').MongoClient;
@@ -45,9 +49,10 @@ var url = 'mongodb://man.cristiana1%40gmail.com:Pw1234@ds025792.mlab.com:25792/f
  * @apiError (Error 5xx) 500 Internal Server Error 
  *
  */
-
-router.route('/exercises/')
-    .get(function(req, res) {
+ // mounth path or route
+router.route('/') // Good practice to use route method to avoid duplicate route naming and thus typo errors
+// a route and its get handler function (middleware system)
+.get(function(req, res) {
 
         MongoClient.connect(url, function(err, db) {
 
