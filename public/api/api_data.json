@@ -580,7 +580,7 @@
       "examples": [
         {
           "title": "Post-Example:",
-          "content": " {\n    \"email\" : \"mail2@example.com\",\n    \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n    \"name\":\"Daenerys\",\n    \"lastname\":\"Targaryen\",\n    \"level\":\"9000\",\n    \"metric\":\"0\",\n    \"weight\":\"45.3\",\n    \"height\":\"165.5\"\n}",
+          "content": " {\n    \"email\" : \"mail2@example.com\",\n    \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n    \"name\" : \"Daenerys\",\n    \"lastname\" : \"Targaryen\",\n    \"level\" : \"9000\",\n    \"metric\" : \"0\",\n    \"weight\" : \"45.3\",\n    \"height\" : \"165.5\"\n}",
           "type": "json"
         }
       ]
@@ -775,7 +775,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n      {\n          \"_id\" : \"573ec075e85f5601f611322a\",\n          \"email\" : \"mail@example.com\",\n          \"password\" : \"58756879c05c68dfac9866712fad6a93f8146f337a69afe7dd238f3364946366\", \n          \"name\":\"John\",\n          \"lastname\":\"Snow\",\n          \"level\":\"5\",\n          \"metric\":\"0\",\n          \"weight\":\"73.5\",\n          \"height\":\"181.3\"\n      },\n      {\n          \"_id\" : \"54c64290a85e56f1f6b1c229\",\n          \"email\" : \"mail2@example.com\",\n          \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n          \"name\":\"Sansa\",\n          \"lastname\":\"Stark\",\n          \"level\":\"4\",\n          \"metric\":\"0\",\n          \"weight\":\"123.3\",\n          \"height\":\"172.5\"\n      }\n ]",
+          "content": "HTTP/1.1 200 OK\n[\n      {\n          \"_id\" : \"573ec075e85f5601f611322a\",\n          \"email\" : \"mail@example.com\",\n          \"password\" : \"58756879c05c68dfac9866712fad6a93f8146f337a69afe7dd238f3364946366\", \n          \"name\" : \"John\",\n          \"lastname\" : \"Snow\",\n          \"level\" : \"5\",\n          \"metric\" : \"0\",\n          \"weight\" : \"73.5\",\n          \"height\" : \"181.3\"\n      },\n      {\n          \"_id\" : \"54c64290a85e56f1f6b1c229\",\n          \"email\" : \"mail2@example.com\",\n          \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n          \"name\":\"Sansa\",\n          \"lastname\" : \"Stark\",\n          \"level\" : \"4\", \n          \"metric\" : \"0\",\n          \"weight\" : \"123.3\",\n          \"height\" : \"172.5\"\n      }\n ]",
           "type": "json"
         }
       ]
@@ -790,14 +790,7 @@
             "description": "<p>Internal Server Error</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
-          "type": "json"
-        }
-      ]
+      }
     },
     "filename": "routes/users.js",
     "groupTitle": "Users"
@@ -837,7 +830,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n  {\n        \"_id\" : \"54c64290a85e56f1f6b1c229\",\n        \"email\" : \"mail2@example.com\",\n        \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n        \"name\":\"Sansa\",\n        \"lastname\":\"Stark\",\n        \"level\":\"4\",\n        \"metric\":\"0\",\n        \"weight\":\"123.3\",\n        \"height\":\"172.5\"\n  }",
+          "content": "HTTP/1.1 200 OK\n  {\n        \"_id\" : \"54c64290a85e56f1f6b1c229\",\n        \"email\" : \"mail2@example.com\",\n        \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n        \"name\" : \"Sansa\",\n        \"lastname\" : \"Stark\",\n        \"level\" : \"4\",\n        \"metric\" : \"0\",\n        \"weight\" : \"123.3\",\n        \"height\" : \"172.5\"\n  }",
           "type": "json"
         }
       ]
@@ -894,12 +887,12 @@
       "examples": [
         {
           "title": "Edit-Fitness-Example:",
-          "content": "{\n    \"level\":\"4\",\n    \"metric\":\"0\",\n    \"weight\":\"123.3\",\n    \"height\":\"172.5\"\n}",
+          "content": "{\n    \"level\" : \"4\",\n    \"metric\" : \"0\",\n    \"weight\" : \"123.3\",\n    \"height\" : \"172.5\"\n}",
           "type": "json"
         },
         {
           "title": "Edit-Account-Example:",
-          "content": "{\n    \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n    \"name\":\"Sansa\",\n}",
+          "content": "{\n    \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n    \"name\" : \"Sansa\",\n}",
           "type": "json"
         }
       ]

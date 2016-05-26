@@ -32,23 +32,23 @@ router.route('/')
     *               "_id" : "573ec075e85f5601f611322a",
     *               "email" : "mail@example.com",
     *               "password" : "58756879c05c68dfac9866712fad6a93f8146f337a69afe7dd238f3364946366", 
-    *               "name":"John",
-    *               "lastname":"Snow",
-    *               "level":"5",
-    *               "metric":"0",
-    *               "weight":"73.5",
-    *               "height":"181.3"
+    *               "name" : "John",
+    *               "lastname" : "Snow",
+    *               "level" : "5",
+    *               "metric" : "0",
+    *               "weight" : "73.5",
+    *               "height" : "181.3"
     *           },
     *           {
     *               "_id" : "54c64290a85e56f1f6b1c229",
     *               "email" : "mail2@example.com",
     *               "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
     *               "name":"Sansa",
-    *               "lastname":"Stark",
-    *               "level":"4",
-    *               "metric":"0",
-    *               "weight":"123.3",
-    *               "height":"172.5"
+    *               "lastname" : "Stark",
+    *               "level" : "4", 
+    *               "metric" : "0",
+    *               "weight" : "123.3",
+    *               "height" : "172.5"
     *           }
     *      ]
     *
@@ -61,13 +61,15 @@ router.route('/')
         MongoClient.connect(url, function(err, db) {
 
             if (err) {
-                res.status(500).send({ "error" : "Internal Server Error" });
+                res.status(500);
+                res.json({ "error" : "Internal Server Error" });
             } else {
                 var collection = db.collection('users');
                 collection.find().toArray(function(err, result) {
 
                     if (err) {
-                        res.status(500).send({ "error" : "Internal Server Error" });
+                        res.status(500);
+                        res.json({ "error" : "Internal Server Error" });
                     } else {
                         res.status(200);
                         res.json(result);
@@ -101,12 +103,12 @@ router.route('/')
     *    {
     *       "email" : "mail2@example.com",
     *       "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
-    *       "name":"Daenerys",
-    *       "lastname":"Targaryen",
-    *       "level":"9000",
-    *       "metric":"0",
-    *       "weight":"45.3",
-    *       "height":"165.5"
+    *       "name" : "Daenerys",
+    *       "lastname" : "Targaryen",
+    *       "level" : "9000",
+    *       "metric" : "0",
+    *       "weight" : "45.3",
+    *       "height" : "165.5"
     *   }
     *
     * @apiSuccess (Success 2xx) 201 User Created
@@ -127,18 +129,15 @@ router.route('/')
 
             if (err) {
                 res.status(500);
-                res.json({
-                    'error': 'Internal Server Error'
-                });
+                res.json({ "message": "Internal Server Error" });
             } else {
                 var collection = db.collection('users');
 
                 collection.insert(req.body, function(err, result) {
 
                     if (err) {
-                        res.status(500).send({
-                            "message": "Internal Server Error"
-                        });
+                        res.status(500);
+                        res.json({ "message": "Internal Server Error" });
                     } else {
                         res.status(201);
                         res.location('/' + result.insertedIds.toString());
@@ -172,12 +171,12 @@ router.route('/:id')
     *           "_id" : "54c64290a85e56f1f6b1c229",
     *           "email" : "mail2@example.com",
     *           "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
-    *           "name":"Sansa",
-    *           "lastname":"Stark",
-    *           "level":"4",
-    *           "metric":"0",
-    *           "weight":"123.3",
-    *           "height":"172.5"
+    *           "name" : "Sansa",
+    *           "lastname" : "Stark",
+    *           "level" : "4",
+    *           "metric" : "0",
+    *           "weight" : "123.3",
+    *           "height" : "172.5"
     *     }
     *
     * @apiError 404 User Not Found
@@ -190,7 +189,8 @@ router.route('/:id')
 
         MongoClient.connect(url, function(err, db) {
             if (err) {
-                res.status(500).send({ "error" : "Internal Server Error" });
+                res.status(500);
+                res.json({ "error" : "Internal Server Error" });
             };
 
             var collection = db.collection('users');
@@ -198,9 +198,11 @@ router.route('/:id')
                 collection.findOne({ '_id': ObjectID(req.params.id) }, function(err, result) {
 
                     if (err) {
-                        res.status(500).send({ "error" : "Internal Server Error" });
+                        res.status(500);
+                        res.json({ "error" : "Internal Server Error" });
                     } else if (result === null) {
-                        res.status(404).send({ "error": "User Not Found" });
+                        res.status(404);
+                        res.json({ "error" : "User Not Found" });
                     } else {
                         res.status(200); //ok
                         res.json(result);
@@ -228,16 +230,16 @@ router.route('/:id')
     * @apiParam {ObjectId} id Users unique ID.
     * @apiParamExample {json} Edit-Fitness-Example:
     *   {
-    *       "level":"4",
-    *       "metric":"0",
-    *       "weight":"123.3",
-    *       "height":"172.5"
+    *       "level" : "4",
+    *       "metric" : "0",
+    *       "weight" : "123.3",
+    *       "height" : "172.5"
     *   }
     *
     * @apiParamExample {json} Edit-Account-Example:
     *   {
     *       "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
-    *       "name":"Sansa",
+    *       "name" : "Sansa",
     *   }
     *
     * @apiSuccess (Success 2xx) 201 User Edited
@@ -257,17 +259,20 @@ router.route('/:id')
     .put(function(req, res) {
         MongoClient.connect(url, function(err, db) {
             if (err) {
-                res.status(500).send({ "error" : "Internal Server Error" });
+                res.status(500);
+                res.json({ "error" : "Internal Server Error" });
                 return;
             } 
             var collection = db.collection('users');
 
             try {
                 collection.update({ '_id': ObjectID(req.params.id)}, { $set : req.body }, function(err, result) {
-                    res.status(201).send({ "message" : "User edited" });
+                    res.status(201);
+                    res.json({ "message" : "User edited" });
                 });
             } catch (e) {
-                res.status(400).send({ "error" : "Bad Request" });
+                res.status(400);
+                res.json({ "error" : "Bad Request" });
             } finally {
                 db.close();
             }
@@ -301,17 +306,20 @@ router.route('/:id')
 
         MongoClient.connect(url, function(err, db) {
             if (err) {
-                res.status(500).send({ "error" : "Internal Server Error"});
+                res.status(500);
+                res.json({ "error" : "Internal Server Error"});
                 return;
             }
             var collection = db.collection('users');
 
             try {
                 collection.remove({ "_id" : ObjectID(req.params.id) }, function(err, result) {
-                    res.status(204).send( { "message" : "User deleted" });
+                    res.status(204);
+                    res.json({ "message" : "User deleted" });
                 });
             } catch(e) {
-                res.status(400).send({ "error" : "Bad Request" });
+                res.status(400);
+                res.json({ "error" : "Bad Request" });
             } finally {
                 db.close();
             }
