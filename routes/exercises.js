@@ -21,10 +21,11 @@ router.route('/')
     *
     * @apiDescription This request returns all exercises which are by default available for the user. This does not include user custom made exercises.  
     *
-    * @apiSuccess {String} name Name of the Exercise.
-    * @apiSuccess {Number} duration  Amount of time measured in minutes that the Exercise takes.
-    * @apiSuccess {Array} equipment String Array of various equipment needed for the Exercise.
-    * @apiSuccess {Number} burntQ Number of calories burnt by performing the Exercise.
+    * @apiSuccess (Exercise Fields) {String} _id Unique Mongo generated id of the Exercise.
+    * @apiSuccess (Exercise Fields) {String} name Name of the Exercise.
+    * @apiSuccess (Exercise Fields) {Number} duration  Amount of time measured in minutes that the Exercise takes.
+    * @apiSuccess (Exercise Fields) {Array} equipment String Array of various equipment needed for the Exercise.
+    * @apiSuccess (Exercise Fields) {Number} burntQ Number of calories burnt by performing the Exercise.
     *
     * @apiSuccessExample {json} Success-Response:
     *   HTTP/1.1 200 OK
@@ -52,11 +53,6 @@ router.route('/')
     *   ]
     *
     * @apiError (Error 5xx) 500 Internal Server Error 
-    * @apiErrorExample {json} Error-Response:
-    *   HTTP/1.1 500 Internal Server Error
-    *   {
-    *       'error': 'Internal Server Error'
-    *   }
     *
     */
     // Handler function (middleware system) for get request
@@ -65,20 +61,14 @@ router.route('/')
         MongoClient.connect(url, function(err, db) {
 
             if (err) {
-                res.status(500);
-                res.json({
-                    'error': 'Internal Server Error'
-                });
+                res.status(500).send({ "error" : "Internal Server Error" });
                 return;
             } 
             var collection = db.collection('exercises');
             collection.find().toArray(function(err, result) {
 
                 if (err) {
-                    res.status(500);
-                    res.json({
-                        'error': 'Internal Server Error'
-                    });
+                    res.status(500).send({ "error" : "Internal Server Error" });
                     return;
                 } 
                 res.status(200);
@@ -94,14 +84,14 @@ router.route('/')
     * @api {post} /exercises Create Exercise
     * @apiName CreateExercise
     * @apiGroup Exercises
-    * @apiVersion 0.0.1
+    * @apiVersion 0.0.2
     *
     * @apiDescription This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the parameters specified below. A return Json prividing the generated _id is returned
     *
-    * @apiParam (RequestedFields) {String} name Name of the Exercise.
-    * @apiParam (RequestedFields) {Number} duration  Amount of time measured in minutes that the Exercise takes.
-    * @apiParam (RequestedFields) {Array} equipment String Array of various equipment needed for the Exercise.
-    * @apiParam (RequestedFields) {Number} burntQ Number of calories burnt by performing the Exercise.
+    * @apiParam (Requested Fields) {String} name Name of the Exercise.
+    * @apiParam (Requested Fields) {Number} duration  Amount of time measured in minutes that the Exercise takes.
+    * @apiParam (Requested Fields) {Array} equipment String Array of various equipment needed for the Exercise.
+    * @apiParam (Requested Fields) {Number} burntQ Number of calories burnt by performing the Exercise.
     *
     * @apiParamExample {json} Post-Example:
     *   {
@@ -113,22 +103,21 @@ router.route('/')
     *       burntQ: 1200
     *   }
     * 
-    * @apiSuccess (Success 201) 201 Exercise Created
+    * @apiSuccess (Success 2xx) 201 Exercise Created
     * @apiSuccessExample {json} Success-Response:
     *     HTTP/1.1 201 Created 
     *     Location : /api/Exercises/<ObjectId>
     *     {
-            '_id' : '5746d36bfa2cdf7c300bf61c',
+    *       '_id' : '5746d36bfa2cdf7c300bf61c',
     *       'message': 'Exercise added'
     *     }
     *
-    * @apiError (Error 4xx) 404 Exercise not Found
     * @apiError (Error 4xx) 400 Bad Request <br>Wrongly formated <code>json</code> was sent.
     * @apiErrorExample {json} Error-Response:
-    *     HTTP/1.1 404 Not Found
-    *     {
+    *   HTTP/1.1 404 Not Found
+    *   {
     *       'error': 'ExerciseNotFound'
-    *     }
+    *   }
     *
     * @apiError (Error 5xx) 500 Internal Server Error 
     * @apiErrorExample {json} Error-Response:
@@ -152,31 +141,22 @@ router.route('/')
                 var collection = db.collection('exercises');
 
                 collection.insert(req.body, function(err, result) {
-
+                    
                     if (err) {
                         res.status(500).send({
                             "message": "Internal Server Error"
                         });
-                    } else if (result === null) {
-                        res.status(404).send({
-                            "error": "Exercise was not found"
-                        });
                     } else {
                         res.status(201);
-                        res.location('/api/exercises/' + result.insertedIds.toString());
-                        var obj = {
+                        res.location('/' + result.insertedIds.toString());
+                        res.json({
                             "_id": result.insertedIds.toString(),
                             "message": "Exercise added"
-                        };
-                        
-                        res.json(obj);
+                        });
                     }
                     db.close();
                 });
-
             }
-
-
         });
     });
 
@@ -192,13 +172,7 @@ router.route('/')
     *
     * @apiParam {ObjectId} id The unique ID of the Exercise.
     *
-    * @apiSuccess {String} name Name of the Exercise.
-    * @apiSuccess {Number} duration  Amount of time measured in minutes that the Exercise takes.
-    * @apiSuccess {Array} equipment String Array of various equipment needed for the Exercise.
-    * @apiSuccess {Number} burntQ Number of calories burnt by performing the Exercise.
-    *
     * @apiSuccess (Success 2xx) 200 OK
-    * @apiSuccess (Success 3xx) 304 Not Modified
     * @apiSuccessExample {json} Success-Response:
     *   HTTP/1.1 200 OK
     *   {
@@ -210,18 +184,10 @@ router.route('/')
     *       ],
     *       burntQ: 1234
     *   }
-    * @apiSuccessExample {json} Success-Response (304):
-    *     HTTP/1.1 304 Not Modified
     *
     * @apiError 404 Exercise Not Found
     * @apiError 400 Bad Request <br>Wrongly formated <code>id</code> was sent.
-    *
     * @apiError (Error 5xx) 500 Internal Server Error 
-    * @apiErrorExample {json} Error-Response:
-    *   HTTP/1.1 500 Internal Server Error
-    *   {
-    *       'error': 'Internal Server Error'
-    *   }
     *
     */
 
@@ -229,36 +195,25 @@ router.route('/')
 
         MongoClient.connect(url, function(err, db) {
             if (err) {
-                res.status(500).send({
-                    "message": "Internal Server Error"
-                });
-            };
+                res.status(500).send({ "error" : "Internal Server Error" });
+            }
 
             var collection = db.collection('exercises');
             try {
-                collection.findOne({
-                    '_id': ObjectID(req.params.id)
-                }, function(err, result) {
+                collection.findOne({ '_id': ObjectID(req.params.id) }, function(err, result) {
+                    
                     if (err) {
-                        res.status(500).send({
-                            "message": "Internal Server Error"
-                        });
+                        res.status(500).send({ "error" : "Internal Server Error" });
                     } else if (result === null) {
-                        res.status(404).send({
-                            "error": "Exercise Not Found"
-                        });
+                        res.status(404).send({ "error": "Exercise Not Found" });
                     } else {
-                        res.status(200); //ok
+                        res.status(200); 
                         res.json(result);
-
                     }
-                    db.close();
                 });
             } catch (e) {
-                res.status(400);
-                res.json({
-                    'error': 'Bad Request'
-                });
+                res.status(400).send({ "error" : "Bad Request" });
+            } finally {
                 db.close();
             }
             
@@ -289,7 +244,7 @@ router.route('/')
     *       duration: 4
     *   }
     *
-    * @apiSuccess (Success 201) 201 Exercise Edited
+    * @apiSuccess (Success 2xx) 201 Exercise Edited
     *
     * @apiSuccessExample {json} Success-Response:
     *     HTTP/1.1 201 Created 
@@ -300,38 +255,26 @@ router.route('/')
     *     
     * @apiError (Error 4xx) 404 Exercise not Found
     * @apiError (Error 4xx) 400 Bad Request <br>Wrongly formated <code>json</code> was sent.
-    * @apiErrorExample {json} Error-Response:
-    *     HTTP/1.1 404 Not Found
-    *     {
-    *       'error': 'ExerciseNotFound'
-    *     }
-    *
     * @apiError (Error 5xx) 500 Internal Server Error 
-    * @apiErrorExample {json} Error-Response:
-    *   HTTP/1.1 500 Internal Server Error
-    *   {
-    *       'error': 'Internal Server Error'
-    *   }
     * 
     */
     .put(function(req, res) {
         MongoClient.connect(url, function(err, db) {
-
+            if (err) {
+                res.status(500).send({ "error" : "Internal Server Error" });
+                return;
+            } 
             var collection = db.collection('exercises');
 
-            collection.update({
-                '_id': ObjectID(req.params.id)
-            }, {
-                $set: req.body
-            }, function(err, result) {
-                // response to the browser
-                res.status(201);
-                res.location('/api/exercises/' + ObjectID(req.params.id));
-                res.json({
-                    "message": "Exercise edited"
+            try {
+                collection.update({ '_id': ObjectID(req.params.id)}, { $set : req.body }, function(err, result) {
+                    res.status(201).send({ "message" : "Exercise edited" });
                 });
+            } catch (e) {
+                res.status(400).send({ "error" : "Bad Request" });
+            } finally {
                 db.close();
-            });
+            }
         });
     })
 
@@ -341,12 +284,16 @@ router.route('/')
      * @apiGroup Exercises
      * @apiVersion 0.0.1
      *
+     * @apiDescription This request deletes an existing exercise with the _id parameter specified in the request URL.  
      * @apiParam {ObjectId} id Exercises unique ID.
      *
-     * @apiSuccess (Success 204) 204 No Content
+     * @apiSuccess (Success 2xx) 204 No Content
      *
      * @apiSuccessExample {json} Success-Response:
-     *     HTTP/1.1 204 No Content
+     *      HTTP/1.1 204 No Content
+     *      { 
+     *          "message" : "Exercise deleted" 
+     *      }
      *
      * @apiError 404 Exercise Not Found
      * @apiError 400 Bad Request <br>A wrong formated <code>id</code> was sent
@@ -355,19 +302,22 @@ router.route('/')
      *
      */
      .delete(function(req, res) {
-
         MongoClient.connect(url, function(err, db) {
-
+            if (err) {
+                res.status(500).send({ "error" : "Internal Server Error"});
+                return;
+            }
             var collection = db.collection('exercises');
-            collection.remove({
-                '_id': ObjectID(req.params.id)
-            }, function(err, result) {
-                res.status(202);
-                res.json({
-                    'message': 'exercise deleted'
+
+            try {
+                collection.remove({ "_id" : ObjectID(req.params.id) }, function(err, result) {
+                    res.status(204).send( { "message" : "Exercise deleted" });
                 });
+            } catch(e) {
+                res.status(400).send({ "error" : "Bad Request" });
+            } finally {
                 db.close();
-            });
+            }
         });
     });
 

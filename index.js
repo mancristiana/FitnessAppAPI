@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 
 var users = require('./routes/users.js');
 var exercises = require('./routes/exercises.js');
-var orders = require('./routes/orders.js');
+var plans = require('./routes/plans.js');
 
 // Access-Control error fix http://stackoverflow.com/questions/18310394/no-access-control-allow-origin-node-apache-port-issue
 app.all('/*', function (req, res, next) {
@@ -37,6 +37,6 @@ app.all(function(error, req, res, next) {
 // For specified path use required modules
 app.use('/api/users/', users);
 app.use('/api/exercises/', exercises);
-app.use('/api/orders/', orders);
+app.use('/api/users/:user_id/plans', plans);
 
 app.listen(process.env.PORT || 3000);

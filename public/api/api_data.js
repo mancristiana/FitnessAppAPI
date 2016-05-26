@@ -5,8 +5,111 @@ define({ "api": [
     "title": "Create Exercise",
     "name": "CreateExercise",
     "group": "Exercises",
+    "version": "0.0.2",
+    "description": "<p>This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the parameters specified below. A return Json prividing the generated _id is returned</p>",
+    "parameter": {
+      "fields": {
+        "Requested Fields": [
+          {
+            "group": "Requested Fields",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the Exercise.</p>"
+          },
+          {
+            "group": "Requested Fields",
+            "type": "Number",
+            "optional": false,
+            "field": "duration",
+            "description": "<p>Amount of time measured in minutes that the Exercise takes.</p>"
+          },
+          {
+            "group": "Requested Fields",
+            "type": "Array",
+            "optional": false,
+            "field": "equipment",
+            "description": "<p>String Array of various equipment needed for the Exercise.</p>"
+          },
+          {
+            "group": "Requested Fields",
+            "type": "Number",
+            "optional": false,
+            "field": "burntQ",
+            "description": "<p>Number of calories burnt by performing the Exercise.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Post-Example:",
+          "content": "{\n    name: \"Air Bike\",\n    duration: 5,\n    equipment: [\n        \"mat\"\n    ],\n    burntQ: 1200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 2xx": [
+          {
+            "group": "Success 2xx",
+            "optional": false,
+            "field": "201",
+            "description": "<p>Exercise Created</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 201 Created \nLocation : /api/Exercises/<ObjectId>\n{\n  '_id' : '5746d36bfa2cdf7c300bf61c',\n  'message': 'Exercise added'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request <br>Wrongly formated <code>json</code> was sent.</p>"
+          }
+        ],
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Not Found\n{\n    'error': 'ExerciseNotFound'\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/exercises.js",
+    "groupTitle": "Exercises"
+  },
+  {
+    "type": "post",
+    "url": "/exercises",
+    "title": "Create Exercise",
+    "name": "CreateExercise",
+    "group": "Exercises",
     "version": "0.0.1",
-    "description": "<p>This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the following parameters.</p>",
+    "description": "<p>This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the parameters specified below.</p>",
     "parameter": {
       "fields": {
         "RequestedFields": [
@@ -105,7 +208,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/exercises.js",
+    "filename": "routes/_apiDoc.js",
     "groupTitle": "Exercises"
   },
   {
@@ -115,6 +218,7 @@ define({ "api": [
     "name": "DeleteExercise",
     "group": "Exercises",
     "version": "0.0.1",
+    "description": "<p>This request deletes an existing exercise with the _id parameter specified in the request URL.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -130,9 +234,9 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 204": [
+        "Success 2xx": [
           {
-            "group": "Success 204",
+            "group": "Success 2xx",
             "optional": false,
             "field": "204",
             "description": "<p>No Content</p>"
@@ -142,7 +246,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 204 No Content",
+          "content": "HTTP/1.1 204 No Content\n{ \n    \"message\" : \"Exercise deleted\" \n}",
           "type": "json"
         }
       ]
@@ -186,30 +290,37 @@ define({ "api": [
     "description": "<p>This request returns all exercises which are by default available for the user. This does not include user custom made exercises.</p>",
     "success": {
       "fields": {
-        "Success 200": [
+        "Exercise Fields": [
           {
-            "group": "Success 200",
+            "group": "Exercise Fields",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique Mongo generated id of the Exercise.</p>"
+          },
+          {
+            "group": "Exercise Fields",
             "type": "String",
             "optional": false,
             "field": "name",
             "description": "<p>Name of the Exercise.</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Exercise Fields",
             "type": "Number",
             "optional": false,
             "field": "duration",
             "description": "<p>Amount of time measured in minutes that the Exercise takes.</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Exercise Fields",
             "type": "Array",
             "optional": false,
             "field": "equipment",
             "description": "<p>String Array of various equipment needed for the Exercise.</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Exercise Fields",
             "type": "Number",
             "optional": false,
             "field": "burntQ",
@@ -235,14 +346,7 @@ define({ "api": [
             "description": "<p>Internal Server Error</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
-          "type": "json"
-        }
-      ]
+      }
     },
     "filename": "routes/exercises.js",
     "groupTitle": "Exercises"
@@ -270,36 +374,6 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "name",
-            "description": "<p>Name of the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "duration",
-            "description": "<p>Amount of time measured in minutes that the Exercise takes.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Array",
-            "optional": false,
-            "field": "equipment",
-            "description": "<p>String Array of various equipment needed for the Exercise.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "burntQ",
-            "description": "<p>Number of calories burnt by performing the Exercise.</p>"
-          }
-        ],
         "Success 2xx": [
           {
             "group": "Success 2xx",
@@ -307,25 +381,12 @@ define({ "api": [
             "field": "200",
             "description": "<p>OK</p>"
           }
-        ],
-        "Success 3xx": [
-          {
-            "group": "Success 3xx",
-            "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
-          }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
           "content": "HTTP/1.1 200 OK\n{\n    _id: \"573ec098e85f5601f611322b\",\n    name: \"Push Up\",\n    duration: 3,\n    equipment: [\n        \"steady floor\"\n    ],\n    burntQ: 1234\n}",
-          "type": "json"
-        },
-        {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
           "type": "json"
         }
       ]
@@ -354,14 +415,7 @@ define({ "api": [
             "description": "<p>Internal Server Error</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
-          "type": "json"
-        }
-      ]
+      }
     },
     "filename": "routes/exercises.js",
     "groupTitle": "Exercises"
@@ -401,9 +455,9 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 201": [
+        "Success 2xx": [
           {
-            "group": "Success 201",
+            "group": "Success 2xx",
             "optional": false,
             "field": "201",
             "description": "<p>Exercise Edited</p>"
@@ -442,30 +496,137 @@ define({ "api": [
             "description": "<p>Internal Server Error</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 404 Not Found\n{\n  'error': 'ExerciseNotFound'\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
-          "type": "json"
-        }
-      ]
+      }
     },
     "filename": "routes/exercises.js",
     "groupTitle": "Exercises"
   },
   {
+    "type": "post",
+    "url": "/users",
+    "title": "Create User",
+    "name": "CreateUser",
+    "group": "Users",
+    "version": "0.0.2",
+    "description": "<p>This request creates a new user by using the json body provided. An _id field is generated automatically. For consistency the json should include the parameters specified below. A return Json prividing the generated _id is returned</p>",
+    "parameter": {
+      "fields": {
+        "User fields": [
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique Mongo generated id of the User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email of User. Also serves as username for User account.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>Salted hashed password for User account.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Firstname of the User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "lastname",
+            "description": "<p>Lastname of the User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "Number",
+            "optional": false,
+            "field": "level",
+            "description": "<p>Level of training progress for the User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "Number",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>Metric refers to measurement in KG or LB. This field can be either 0 for KG or 1 for LB. Default value is 0.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "Number",
+            "optional": false,
+            "field": "weight",
+            "description": "<p>Weight in specified metric of User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "Number",
+            "optional": false,
+            "field": "height",
+            "description": "<p>Height in specified metric of User.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Post-Example:",
+          "content": " {\n    \"email\" : \"mail2@example.com\",\n    \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n    \"name\":\"Daenerys\",\n    \"lastname\":\"Targaryen\",\n    \"level\":\"9000\",\n    \"metric\":\"0\",\n    \"weight\":\"45.3\",\n    \"height\":\"165.5\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 2xx": [
+          {
+            "group": "Success 2xx",
+            "optional": false,
+            "field": "201",
+            "description": "<p>User Created</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 201 Created \nLocation : /api/users/<ObjectId>\n{\n  \"_id\" : \"5746d36bfa2cdf7c300bf61c\",\n  \"message\": \"User added\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      }
+    },
+    "filename": "routes/users.js",
+    "groupTitle": "Users"
+  },
+  {
     "type": "delete",
-    "url": "/users/:id",
+    "url": "/users/id",
     "title": "Delete User",
     "name": "DeleteUser",
     "group": "Users",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "description": "<p>This request deletes an existing user with the _id parameter specified in the request URL.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -481,9 +642,9 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 204": [
+        "Success 2xx": [
           {
-            "group": "Success 204",
+            "group": "Success 2xx",
             "optional": false,
             "field": "204",
             "description": "<p>No Content</p>"
@@ -493,7 +654,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 204 No Content",
+          "content": "HTTP/1.1 204 No Content \n{\n    \"message\" : \"User deleted\"\n}",
           "type": "json"
         }
       ]
@@ -529,77 +690,96 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/api/users/",
+    "url": "/users",
     "title": "Get all Users",
     "name": "GetAllUser",
     "group": "Users",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "description": "<p>This request returns an array containing all app users in json format.</p>",
     "success": {
       "fields": {
-        "Success 200": [
+        "User fields": [
           {
-            "group": "Success 200",
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique Mongo generated id of the User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email of User. Also serves as username for User account.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>Salted hashed password for User account.</p>"
+          },
+          {
+            "group": "User fields",
             "type": "String",
             "optional": false,
             "field": "name",
             "description": "<p>Firstname of the User.</p>"
           },
           {
-            "group": "Success 200",
+            "group": "User fields",
             "type": "String",
             "optional": false,
             "field": "lastname",
             "description": "<p>Lastname of the User.</p>"
           },
           {
-            "group": "Success 200",
-            "type": "String",
+            "group": "User fields",
+            "type": "Number",
             "optional": false,
-            "field": "address",
-            "description": "<p>Address of the User.</p>"
+            "field": "level",
+            "description": "<p>Level of training progress for the User.</p>"
           },
           {
-            "group": "Success 200",
-            "type": "String",
+            "group": "User fields",
+            "type": "Number",
             "optional": false,
-            "field": "phone",
-            "description": "<p>Phone of the User.</p>"
+            "field": "metric",
+            "description": "<p>Metric refers to measurement in KG or LB. This field can be either 0 for KG or 1 for LB. Default value is 0.</p>"
           },
           {
-            "group": "Success 200",
-            "type": "String",
+            "group": "User fields",
+            "type": "Number",
             "optional": false,
-            "field": "email",
-            "description": "<p>email of the User.</p>"
+            "field": "weight",
+            "description": "<p>Weight in specified metric of User.</p>"
+          },
+          {
+            "group": "User fields",
+            "type": "Number",
+            "optional": false,
+            "field": "height",
+            "description": "<p>Height in specified metric of User.</p>"
           }
         ],
-        "Success 304": [
+        "Success 2xx": [
           {
-            "group": "Success 304",
+            "group": "Success 2xx",
             "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
+            "field": "200",
+            "description": "<p>OK</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"_id\" : \"ObjectId(12345)\",\n  \"name\" : \"xxx\", \n  \"lastname\":\"xxx\",\n  \"address\":\"xxx\",\n  \"phone\":\"xxxxxxxxx\",\n  \"email\":\"xxx\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
+          "content": "HTTP/1.1 200 OK\n[\n      {\n          \"_id\" : \"573ec075e85f5601f611322a\",\n          \"email\" : \"mail@example.com\",\n          \"password\" : \"58756879c05c68dfac9866712fad6a93f8146f337a69afe7dd238f3364946366\", \n          \"name\":\"John\",\n          \"lastname\":\"Snow\",\n          \"level\":\"5\",\n          \"metric\":\"0\",\n          \"weight\":\"73.5\",\n          \"height\":\"181.3\"\n      },\n      {\n          \"_id\" : \"54c64290a85e56f1f6b1c229\",\n          \"email\" : \"mail2@example.com\",\n          \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n          \"name\":\"Sansa\",\n          \"lastname\":\"Stark\",\n          \"level\":\"4\",\n          \"metric\":\"0\",\n          \"weight\":\"123.3\",\n          \"height\":\"172.5\"\n      }\n ]",
           "type": "json"
         }
       ]
     },
-    "sampleRequest": [
-      {
-        "url": "http://localhost:3000/api/users/"
-      }
-    ],
     "error": {
       "fields": {
         "Error 5xx": [
@@ -610,18 +790,26 @@ define({ "api": [
             "description": "<p>Internal Server Error</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n    'error': 'Internal Server Error'\n}",
+          "type": "json"
+        }
+      ]
     },
     "filename": "routes/users.js",
     "groupTitle": "Users"
   },
   {
     "type": "get",
-    "url": "/api/users/:id",
+    "url": "/users/id",
     "title": "Get User",
     "name": "GetUser",
     "group": "Users",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "description": "<p>This request returns the user specified by the unique ID in the request URL</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -630,77 +818,30 @@ define({ "api": [
             "type": "ObjectId",
             "optional": false,
             "field": "id",
-            "description": "<p>Users unique ID.</p>"
+            "description": "<p>The unique ID of the User.</p>"
           }
         ]
       }
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success 2xx": [
           {
-            "group": "Success 200",
-            "type": "String",
+            "group": "Success 2xx",
             "optional": false,
-            "field": "name",
-            "description": "<p>Firstname of the User.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "lastname",
-            "description": "<p>Lastname of the User.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "address",
-            "description": "<p>Address of the User.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "phone",
-            "description": "<p>Phone of the User.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "email",
-            "description": "<p>email of the User.</p>"
-          }
-        ],
-        "Success 304": [
-          {
-            "group": "Success 304",
-            "optional": false,
-            "field": "304",
-            "description": "<p>Not Modified</p>"
+            "field": "200",
+            "description": "<p>OK</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"_id\" : \"ObjectId(12345)\",\n  \"name\" : \"xxx\", \n  \"lastname\":\"xxx\",\n  \"address\":\"xxx\",\n  \"phone\":\"xxxxxxxxx\",\n  \"email\":\"xxx\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Success-Response (304):",
-          "content": "HTTP/1.1 304 Not Modified",
+          "content": "HTTP/1.1 200 OK\n  {\n        \"_id\" : \"54c64290a85e56f1f6b1c229\",\n        \"email\" : \"mail2@example.com\",\n        \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n        \"name\":\"Sansa\",\n        \"lastname\":\"Stark\",\n        \"level\":\"4\",\n        \"metric\":\"0\",\n        \"weight\":\"123.3\",\n        \"height\":\"172.5\"\n  }",
           "type": "json"
         }
       ]
     },
-    "sampleRequest": [
-      {
-        "url": "http://localhost:3000/api/users/:id"
-      }
-    ],
     "error": {
       "fields": {
         "Error 4xx": [
@@ -732,10 +873,12 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/api/users/:id",
+    "url": "/users/id",
     "title": "Update User",
     "name": "UpdateUser",
     "group": "Users",
+    "version": "0.0.2",
+    "description": "<p>This request updates an existing user using the json body provided and the _id parameter specified in the request URL. For consistency the json may include keys like in the example below.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -747,23 +890,35 @@ define({ "api": [
             "description": "<p>Users unique ID.</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Edit-Fitness-Example:",
+          "content": "{\n    \"level\":\"4\",\n    \"metric\":\"0\",\n    \"weight\":\"123.3\",\n    \"height\":\"172.5\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Edit-Account-Example:",
+          "content": "{\n    \"password\" : \"c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542\", \n    \"name\":\"Sansa\",\n}",
+          "type": "json"
+        }
+      ]
     },
     "success": {
       "fields": {
-        "Success 201": [
+        "Success 2xx": [
           {
-            "group": "Success 201",
+            "group": "Success 2xx",
             "optional": false,
             "field": "201",
-            "description": "<p>User Created</p>"
+            "description": "<p>User Edited</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created \nLocation : /api/users/<ObjectId>\n{\n  \"message\": \"user updated\"\n}",
+          "content": "HTTP/1.1 201 Created \nLocation : /api/users/<ObjectId>\n{\n    \"message\" : \"User edited\"\n}",
           "type": "json"
         }
       ]
@@ -777,65 +932,6 @@ define({ "api": [
             "field": "404",
             "description": "<p>User Not Found</p>"
           },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "400",
-            "description": "<p>Bad Request <br>Wrongly formated <code>json</code> was sent.</p>"
-          }
-        ],
-        "Error 5xx": [
-          {
-            "group": "Error 5xx",
-            "optional": false,
-            "field": "500",
-            "description": "<p>Internal Server Error</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "routes/users.js",
-    "groupTitle": "Users"
-  },
-  {
-    "type": "post",
-    "url": "/api/users/",
-    "title": "Create User",
-    "name": "createUser",
-    "group": "Users",
-    "version": "0.0.1",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Post-Example:",
-          "content": "{\n     \"name\" : \"xxx\",\n     \"lastName\" : \"xxx\",\n     \"address\" : \"xxx\",\n     \"phone\" : \"4512\",\n     \"email\" : \"xxx\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "fields": {
-        "Success 201": [
-          {
-            "group": "Success 201",
-            "optional": false,
-            "field": "201",
-            "description": "<p>User Created</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created \nLocation : /api/users/<ObjectId>\n{\n  \"message\": \"user added\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
           {
             "group": "Error 4xx",
             "optional": false,

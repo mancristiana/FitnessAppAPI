@@ -5,19 +5,16 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var url = 'mongodb://man.cristiana1%40gmail.com:Pw1234@ds025792.mlab.com:25792/fitnessdb';
 
-router.route('/orders/')
+router.route('/')
     .get(function(req, res) {
 
         MongoClient.connect(url, function(err, db) {
 
-            if (err) {
-                res.status(500);
-                res.json({
-                    'error': 'Internal Server Error'
-                });
+            if (err) { 
+                res.status(500).send({"error" : "Internal Server Error"});
             } else {
-                var collection = db.collection('orders');
-                collection.find().toArray(function(err, result) {
+                var collection = db.collection('plans');
+                collection.find({'user_id': ObjectID(req.params.users_id)}).toArray(function(err, result) {
 
                     if (err) {
                         res.status(500);
@@ -40,34 +37,25 @@ router.route('/orders/')
         MongoClient.connect(url, function(err, db) {
 
             if (err) {
-                res.status(500);
-                res.json({
-                    'error': 'Internal Server Error'
-                });
+                res.status(500).send({"error": "Internal Server Error"});
             } else {
-                var orderCollection = db.collection('orders');
+                var planCollection = db.collection('plans');
                 var userCollection = db.collection('users');
-                var prodCollection = db.collection('products');
+                var exerciseCollection = db.collection('exercises');
 
                 // find user
-                userCollection.findOne({
-                    '_id': ObjectID(req.body.user)
-                }, function(err, result) {
+                userCollection.findOne({'_id': ObjectID(req.body.user)}, function(err, result) {
                     if (err) {
-                        res.status(500).send({
-                            "message": "Internal Server Error"
-                        });
+                        res.status(500).send({"message": "Internal Server Error"});
                     } else if (result === null) {
-                        res.status(404).send({
-                            "msg": "404"
-                        });
+                        res.status(404).send({"message": "404"});
                     } else {
                         //res.status(200); //ok
                         //res.json(result);
                         // console.log(result);
-                        var ordersTotal = {};
-                        ordersTotal.user = result;
-                        ordersTotal.status = {
+                        var plansTotal = {};
+                        plansTotal.user = result;
+                        plansTotal.status = {
                             'payment': {
                                 'status': 1,
                                 'description': 'created'
@@ -77,25 +65,23 @@ router.route('/orders/')
                                 'description': 'created'
                             }
                         };
-                        ordersTotal.shipping = {'method' : {'code' : 1, 'description' : 'Post Danmark, packages'}};
-                        ordersTotal.products = [];
+                        plansTotal.shipping = {'method' : {'code' : 1, 'description' : 'Post Danmark, packages'}};
+                        plansTotal.products = [];
                         // find products
                         //var productsArray = [];
                         req.body.products.forEach(function(element, index, array) {
 
-                            prodCollection.findOne({
-                                '_id': ObjectID(element)
-                            }, function(err, result) {
+                            prodCollection.findOne({'_id': ObjectID(element)}, function(err, result) {
                                 //console.log(err);
-                                ordersTotal.products.push(result);
+                                plansTotal.products.push(result);
                                 //console.log(result);
                                 //console.log(index);
                                 if (index === array.length - 1) {
-                                    //console.log(ordersTotal);
-                                    //res.json(ordersTotal);
+                                    //console.log(plansTotal);
+                                    //res.json(plansTotal);
 
-                                    // insert order in db
-                                    orderCollection.insert(ordersTotal, function(err, result) {
+                                    // insert plan in db
+                                    planCollection.insert(plansTotal, function(err, result) {
                                         if (err) {
                                             res.status(500).send({
                                                 "message": "Internal Server Error"
@@ -106,9 +92,9 @@ router.route('/orders/')
                                             });
                                         } else {
                                             res.status(201);
-                                            res.location('/api/orders/' + result.insertedIds.toString());
+                                           // res.location('/api/plans/' + result.insertedIds.toString());
                                             res.json({
-                                                "message": "order added"
+                                                "message": "plan added"
                                             });
                                         }
                                         db.close();
@@ -118,7 +104,7 @@ router.route('/orders/')
                             // db.close();
 
                         });
-                        //console.log(ordersTotal);
+                        //console.log(plansTotal);
 
                     }
 
@@ -128,7 +114,7 @@ router.route('/orders/')
     });
 
 
-router.route('/orders/:id')
+router.route('/:id')
     .get(function(req, res) {
 
         MongoClient.connect(url, function(err, db) {
@@ -138,10 +124,11 @@ router.route('/orders/:id')
                 });
             };
 
-            var collection = db.collection('orders');
+            var collection = db.collection('plans');
             try {
                 collection.findOne({
-                    '_id': ObjectID(req.params.id)
+                    '_id': ObjectID(req.params.id),
+                    'user_id': ObjectID(req.params.users_id)
                 }, function(err, result) {
                     if (err) {
                         res.status(500).send({
@@ -173,7 +160,7 @@ router.route('/orders/:id')
 .put(function(req, res) {
         MongoClient.connect(url, function(err, db) {
 
-            var collection = db.collection('orders');
+            var collection = db.collection('plans');
 
             collection.update({
                 '_id': ObjectID(req.params.id)
@@ -182,9 +169,9 @@ router.route('/orders/:id')
             }, function(err, result) {
                 // response to the browser
                 res.status(201);
-                res.location(/api/orders/ + ObjectID(req.params.id));
+                res.location(/api/plans/ + ObjectID(req.params.id));
                 res.json({
-                    "message": "order edited"
+                    "message": "plan edited"
                 });
                 db.close();
             });
@@ -195,13 +182,13 @@ router.route('/orders/:id')
 
         MongoClient.connect(url, function(err, db) {
 
-            var collection = db.collection('orders');
+            var collection = db.collection('plans');
             collection.remove({
                 '_id': ObjectID(req.params.id)
             }, function(err, result) {
                 res.status(202);
                 res.json({
-                    'message': 'order deleted'
+                    'message': 'plan deleted'
                 });
                 db.close();
             });
