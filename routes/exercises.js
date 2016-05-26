@@ -96,7 +96,7 @@ router.route('/')
     * @apiGroup Exercises
     * @apiVersion 0.0.1
     *
-    * @apiDescription This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the following parameters. 
+    * @apiDescription This request creates a new exercise using the json body provided. An _id field is generated automatically. For consistency the json should include the parameters specified below. A return Json prividing the generated _id is returned
     *
     * @apiParam (RequestedFields) {String} name Name of the Exercise.
     * @apiParam (RequestedFields) {Number} duration  Amount of time measured in minutes that the Exercise takes.
@@ -118,6 +118,7 @@ router.route('/')
     *     HTTP/1.1 201 Created 
     *     Location : /api/Exercises/<ObjectId>
     *     {
+            '_id' : '5746d36bfa2cdf7c300bf61c',
     *       'message': 'Exercise added'
     *     }
     *
@@ -163,9 +164,12 @@ router.route('/')
                     } else {
                         res.status(201);
                         res.location('/api/exercises/' + result.insertedIds.toString());
-                        res.json({
+                        var obj = {
+                            "_id": result.insertedIds.toString(),
                             "message": "Exercise added"
-                        });
+                        };
+                        
+                        res.json(obj);
                     }
                     db.close();
                 });
