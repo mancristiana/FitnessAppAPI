@@ -10,9 +10,9 @@ router.route('/')
     * @api {post} /users Create User
     * @apiName CreateUser
     * @apiGroup Users
-    * @apiVersion 0.0.2
+    * @apiVersion 0.0.3
     * 
-    * @apiDescription This request creates a new user by using the json body provided. An _id field is generated automatically. For consistency the json should include the parameters specified below. A return Json prividing the generated _id is returned
+    * @apiDescription This request creates a new user by using the json body provided. The method creates a new user only if the email provided is not already existing in the database. The password provided for log in is hashed in the database. An _id field is generated automatically. For consistency the json should include the parameters specified below. A return Json prividing the generated _id is returned
     *    
     * @apiParam (User fields) {String} _id         Unique Mongo generated id of the User.
     * @apiParam (User fields) {String} email       Email of User. Also serves as username for User account.
@@ -43,9 +43,12 @@ router.route('/')
     *     Location : /api/users/<ObjectId>
     *     {
     *       "_id" : "5746d36bfa2cdf7c300bf61c",
+    *       "email": "mail2@example.com",
     *       "message": "User added"
     *     }
     * 
+    * @apiError (Error 4xx) 400 Bad Request
+    * @apiError (Error 4xx) 422 User Already Exists
     * @apiError (Error 5xx) 500 Internal Server Error
     */
     .post(function(req, res) {
@@ -54,44 +57,76 @@ router.route('/')
 
             if (err) {
                 res.status(500);
-                res.json({ "message": "Internal Server Error" });
+                res.json({ "error": "Internal Server Error" });
             } else {
                 var collection = db.collection('users');
 
                 var userToCreate = req.body;
-                console.log('PASS = ' + userToCreate.password);
-                userToCreate.password = passwordHash.generate(userToCreate.password);
-                console.log('HASH = ' + userToCreate.password);
-                collection.insert(userToCreate, function(err, result) {
+                
+                // Check if mail already exists
+                try {
+                    collection.findOne({ 'email' : userToCreate.email }, function(err, result) {
 
-                    if (err) {
-                        res.status(500);
-                        res.json({ "message": "Internal Server Error" });
-                    } else {
-                        res.status(201);
-                        res.location('/' + result.insertedIds.toString());
-                        res.json({
-                            "_id" : result.insertedIds.toString(),
-                            "message": "User added"
-                        });
-                    }
+                        if (err) {
+                            res.status(500);
+                            res.json({ "error" : "Internal Server Error" });
+                        } else if (result === null) {
+                            // OKAY THERE IS NO MAIL
+                            
+                            // HASH THE PASSWORD
+                            // console.log('PASS = ' + userToCreate.password);
+                            userToCreate.password = passwordHash.generate(userToCreate.password);
+                            // console.log('HASH = ' + userToCreate.password);
+                            
+                            collection.insert(userToCreate, function(err, result) {
+
+                                if (err) {
+                                    res.status(500);
+                                    res.json({ "error": "Internal Server Error" });
+                                } else {
+                                    res.status(201);
+                                    res.location('/' + result.insertedIds.toString());
+                                    res.json({
+                                        "_id" : result.insertedIds.toString(),
+                                        "email": userToCreate.email,
+                                        "message": "User added"
+                                    });
+                                }
+                                db.close();
+                            });
+                            
+                        } else {
+                            res.status(422); 
+                            res.json({
+                                 "email": userToCreate.email,
+                                 "error": "User Already Exists"
+                            });
+                        }
+                    });
+                } catch (e) {
+                    console.log(e);
+                    res.status(400);
+                    res.json({
+                        "error": "Bad Request"
+                    });
                     db.close();
-                });
+                } 
+
             }
 
         });
     });
 
-router.route('/:id')
+router.route('/:email')
     /**
-    * @api {get} /users/id Get User
+    * @api {get} /users/email Get User
     * @apiName GetUser
     * @apiGroup Users
-    * @apiVersion 0.0.2
+    * @apiVersion 0.0.3
     *
-    * @apiDescription This request returns the user specified by the unique ID in the request URL 
+    * @apiDescription This request returns the user specified by the unique email in the request URL 
     *
-    * @apiParam {ObjectId} id The unique ID of the User.
+    * @apiParam {string} email The email of the User which serves as username for logging in.
     *
     * @apiSuccess (Success 2xx) 200 OK
     * @apiSuccessExample {json} Success-Response:
@@ -123,7 +158,7 @@ router.route('/:id')
 
             var collection = db.collection('users');
             try {
-                collection.findOne({ '_id': ObjectID(req.params.id) }, function(err, result) {
+                collection.findOne({ 'email' : req.params.email }, function(err, result) {
 
                     if (err) {
                         res.status(500);
@@ -137,27 +172,29 @@ router.route('/:id')
                         delete result.password;
                         res.json(result);
                     }
+
+                    db.close();
                 });
             } catch (e) {
+                console.log(e);
                 res.status(400);
                 res.json({
-                    'error': 'Bad Request'
+                    "error": "Bad Request"
                 });
-            } finally {
                 db.close();
-            }
+            } 
 
         });
     })
 
     /**
-    * @api {put} /users/id Update User
+    * @api {put} /users/email Update User
     * @apiName UpdateUser
     * @apiGroup Users
-    * @apiVersion 0.0.2
+    * @apiVersion 0.0.3
     *
-    * @apiDescription This request updates an existing user using the json body provided and the _id parameter specified in the request URL. For consistency the json may include keys like in the example below. 
-    * @apiParam {ObjectId} id Users unique ID.
+    * @apiDescription This request updates an existing user using the json body provided and the email parameter specified in the request URL. For consistency the json may include keys like in the example below. 
+    * @apiParam {string} email The email of the User which serves as username for logging in.
     * @apiParamExample {json} Edit-Fitness-Example:
     *   {
     *       "level" : "4",
@@ -168,7 +205,7 @@ router.route('/:id')
     *
     * @apiParamExample {json} Edit-Account-Example:
     *   {
-    *       "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
+    *       "password" : "NewPa55", 
     *       "name" : "Sansa",
     *   }
     *
@@ -176,7 +213,6 @@ router.route('/:id')
     *
     * @apiSuccessExample {json} Success-Response:
     *       HTTP/1.1 201 Created 
-    *       Location : /api/users/<ObjectId>
     *       {
     *           "message" : "User edited"
     *       }
@@ -195,29 +231,38 @@ router.route('/:id')
             } 
             var collection = db.collection('users');
 
+            // console.log(req.body.password);
+            var userEdited = req.body;
+            if (userEdited.password !== undefined) {
+                userEdited.password = passwordHash.generate(userEdited.password);
+                // console.log(userEdited.password);
+            }
+            // console.log(userEdited.password);
+
             try {
-                collection.update({ '_id': ObjectID(req.params.id)}, { $set : req.body }, function(err, result) {
+                collection.update({ "email" : req.params.email }, { $set : userEdited }, function(err, result) {
                     res.status(201);
                     res.json({ "message" : "User edited" });
+                    db.close();
                 });
             } catch (e) {
                 res.status(400);
                 res.json({ "error" : "Bad Request" });
-            } finally {
+                console.log(e);
                 db.close();
-            }
+            } 
            
         });
     })
 
     /**
-    * @api {delete} /users/id Delete User
+    * @api {delete} /users/email Delete User
     * @apiName DeleteUser
     * @apiGroup Users
-    * @apiVersion 0.0.2
+    * @apiVersion 0.0.3
     *
-    * @apiDescription This request deletes an existing user with the _id parameter specified in the request URL.  
-    * @apiParam {ObjectId} id Users unique ID.
+    * @apiDescription This request deletes an existing user with the unique email parameter specified in the request URL.  
+    * @apiParam {string} email The email of the User which serves as username for logging in.
     *
     * @apiSuccess (Success 2xx) 204 No Content
     *
@@ -243,14 +288,20 @@ router.route('/:id')
             var collection = db.collection('users');
 
             try {
-                collection.remove({ "_id" : ObjectID(req.params.id) }, function(err, result) {
-                    res.status(204);
-                    res.json({ "message" : "User deleted" });
+                collection.remove({ "email" : req.params.email }, function(err, result) {
+                    if (err) {
+                        res.status(500);
+                        res.json({ "error" : "Internal Server Error" });
+                    } else {
+                        console.log(result);
+                        res.status(204);
+                        res.json({ "message" : "User deleted" });
+                    }
+                    db.close();
                 });
             } catch(e) {
                 res.status(400);
                 res.json({ "error" : "Bad Request" });
-            } finally {
                 db.close();
             }
         });
@@ -266,12 +317,18 @@ router.route('/:id')
     * @apiParam (Request body) {String} email Users email.
     * @apiParam (Request body) {String} password Users password.
     *
-    * @apiSuccess (Success 2xx) 200 OK
+    * @apiParamExample {json} Request-Body-Example:
+    *       {
+    *           "email": "mail2@example.com",
+    *           "password": "pass"
+    *       } 
+    *
+    * @apiSuccess (Success 2xx) 200 User Password is correct
     *
     * @apiSuccessExample {json} Success-Response:
     *       HTTP/1.1 200 No Content 
     *       {
-    *           "message" : "User password is correct"
+    *           "message" : "User password is correct
     *       }      
     * @apiError 401 User Password is incorrect
     * @apiError 404 User Not Found
@@ -290,14 +347,16 @@ router.route("/verify")
             }
             var collection = db.collection('users');
 
+             // FIND USER BY MAIL
             try {
-                collection.get({"email" : req.body.email.toString()}, function(err, result) {
+                collection.findOne({ 'email' : req.body.email }, function(err, result) {
+
                     if (err) {
                         res.status(500);
-                        res.json({ "error" : "Internal Server Error"});
-                    } else if (result === null) {
+                        res.json({ "error" : "Internal Server Error" });
+                    } else if (result === null) { // THERE IS NO MAIL
                         res.status(404);
-                        res.json({ "error" : "User Not Found" });
+                        res.json({ "error" : "User Not Found" });                        
                     } else if (passwordHash.verify(req.body.password.toString(), result.password.toString())) {
                         res.status(200); //ok
                         res.json({ 'message' : 'User password is correct' });
@@ -305,14 +364,17 @@ router.route("/verify")
                         res.status(401); //ok
                         res.json({ "error" : "User password is incorrect" });
                     }
+                    
+                    db.close();
                 });
             } catch (e) {
+                console.log(e);
                 res.status(400);
-                res.json({ 'error': 'Bad Request'});
-            } finally {
+                res.json({
+                    "error": "Bad Request"
+                });
                 db.close();
-            }
-
+            } 
         });
     });
 
