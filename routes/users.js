@@ -2,85 +2,10 @@ var express = require('express');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
+var passwordHash = require('password-hash');
 var url = 'mongodb://man.cristiana1%40gmail.com:Pw1234@ds025792.mlab.com:25792/fitnessdb';
 
 router.route('/')
-    /**
-    * @api {get} /users Get all Users
-    * @apiName GetAllUser
-    * @apiGroup Users
-    * @apiVersion 0.0.2
-    *
-    * @apiDescription This request returns an array containing all app users in json format.  
-    *
-    * @apiSuccess (User fields) {String} _id         Unique Mongo generated id of the User.
-    * @apiSuccess (User fields) {String} email       Email of User. Also serves as username for User account.
-    * @apiSuccess (User fields) {String} password    Salted hashed password for User account.
-    * @apiSuccess (User fields) {String} name        Firstname of the User.
-    * @apiSuccess (User fields) {String} lastname    Lastname of the User.
-    * @apiSuccess (User fields) {Number} level       Level of training progress for the User.
-    * @apiSuccess (User fields) {Number} metric      Metric refers to measurement in KG or LB. This field can be either 0 for KG or 1 for LB. Default value is 0.
-    * @apiSuccess (User fields) {Number} weight      Weight in specified metric of User.
-    * @apiSuccess (User fields) {Number} height      Height in specified metric of User.
-    *
-    * @apiSuccess (Success 2xx) 200 OK
-    *
-    * @apiSuccessExample {json} Success-Response:
-    *     HTTP/1.1 200 OK
-    *     [
-    *           {
-    *               "_id" : "573ec075e85f5601f611322a",
-    *               "email" : "mail@example.com",
-    *               "password" : "58756879c05c68dfac9866712fad6a93f8146f337a69afe7dd238f3364946366", 
-    *               "name" : "John",
-    *               "lastname" : "Snow",
-    *               "level" : "5",
-    *               "metric" : "0",
-    *               "weight" : "73.5",
-    *               "height" : "181.3"
-    *           },
-    *           {
-    *               "_id" : "54c64290a85e56f1f6b1c229",
-    *               "email" : "mail2@example.com",
-    *               "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
-    *               "name":"Sansa",
-    *               "lastname" : "Stark",
-    *               "level" : "4", 
-    *               "metric" : "0",
-    *               "weight" : "123.3",
-    *               "height" : "172.5"
-    *           }
-    *      ]
-    *
-    * @apiError (Error 5xx) 500 Internal Server Error 
-    *
-    */
-
-    .get(function(req, res) {
-
-        MongoClient.connect(url, function(err, db) {
-
-            if (err) {
-                res.status(500);
-                res.json({ "error" : "Internal Server Error" });
-            } else {
-                var collection = db.collection('users');
-                collection.find().toArray(function(err, result) {
-
-                    if (err) {
-                        res.status(500);
-                        res.json({ "error" : "Internal Server Error" });
-                    } else {
-                        res.status(200);
-                        res.json(result);
-                    }
-
-                    db.close();
-                });
-            }
-        });
-    })
-
     /**
     * @api {post} /users Create User
     * @apiName CreateUser
@@ -91,7 +16,7 @@ router.route('/')
     *    
     * @apiParam (User fields) {String} _id         Unique Mongo generated id of the User.
     * @apiParam (User fields) {String} email       Email of User. Also serves as username for User account.
-    * @apiParam (User fields) {String} password    Salted hashed password for User account.
+    * @apiParam (User fields) {String} password    Password for User account.
     * @apiParam (User fields) {String} name        Firstname of the User.
     * @apiParam (User fields) {String} lastname    Lastname of the User.
     * @apiParam (User fields) {Number} level       Level of training progress for the User.
@@ -102,7 +27,7 @@ router.route('/')
     * @apiParamExample {json} Post-Example:
     *    {
     *       "email" : "mail2@example.com",
-    *       "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
+    *       "password" : "PAss11#!", 
     *       "name" : "Daenerys",
     *       "lastname" : "Targaryen",
     *       "level" : "9000",
@@ -133,7 +58,11 @@ router.route('/')
             } else {
                 var collection = db.collection('users');
 
-                collection.insert(req.body, function(err, result) {
+                var userToCreate = req.body;
+                console.log('PASS = ' + userToCreate.password);
+                userToCreate.password = passwordHash.generate(userToCreate.password);
+                console.log('HASH = ' + userToCreate.password);
+                collection.insert(userToCreate, function(err, result) {
 
                     if (err) {
                         res.status(500);
@@ -170,7 +99,6 @@ router.route('/:id')
     *     {
     *           "_id" : "54c64290a85e56f1f6b1c229",
     *           "email" : "mail2@example.com",
-    *           "password" : "c0e81794384491161f1777c232bc6bd9ec38f616560b120fda8e90f383853542", 
     *           "name" : "Sansa",
     *           "lastname" : "Stark",
     *           "level" : "4",
@@ -205,6 +133,8 @@ router.route('/:id')
                         res.json({ "error" : "User Not Found" });
                     } else {
                         res.status(200); //ok
+             
+                        delete result.password;
                         res.json(result);
                     }
                 });
@@ -323,6 +253,66 @@ router.route('/:id')
             } finally {
                 db.close();
             }
+        });
+    });
+
+    /**
+    * @api {post} /users/verify Verify User Credential
+    * @apiName Verify
+    * @apiGroup Users
+    * @apiVersion 0.0.2
+    *
+    * @apiDescription This request checks if the username and password specified within the Json body match the db credentials of the User.  
+    * @apiParam (Request body) {String} email Users email.
+    * @apiParam (Request body) {String} password Users password.
+    *
+    * @apiSuccess (Success 2xx) 200 OK
+    *
+    * @apiSuccessExample {json} Success-Response:
+    *       HTTP/1.1 200 No Content 
+    *       {
+    *           "message" : "User password is correct"
+    *       }      
+    * @apiError 401 User Password is incorrect
+    * @apiError 404 User Not Found
+    * @apiError 400 Bad Request <br>A wrong formated <code>JSON</code> was sent
+    * @apiError (Error 5xx) 500 Internal Server Error 
+    *
+    */
+
+router.route("/verify")
+    .post(function(req, res) {
+        MongoClient.connect(url, function(err, db) {
+            if (err) {
+                res.status(500);
+                res.json({ "error" : "Internal Server Error"});
+                return;
+            }
+            var collection = db.collection('users');
+
+            try {
+                collection.get({"email" : req.body.email.toString()}, function(err, result) {
+                    if (err) {
+                        res.status(500);
+                        res.json({ "error" : "Internal Server Error"});
+                    } else if (result === null) {
+                        res.status(404);
+                        res.json({ "error" : "User Not Found" });
+                    } else if (passwordHash.verify(req.body.password.toString(), result.password.toString())) {
+                        res.status(200); //ok
+                        res.json({ 'message' : 'User password is correct' });
+                    } else {
+                        res.status(401); //ok
+                        res.json({ "error" : "User password is incorrect" });
+                    }
+                });
+            } catch (e) {
+                res.status(400);
+                res.json({ 'error': 'Bad Request'});
+            } finally {
+                db.close();
+            }
+
         });
     });
 

@@ -195,7 +195,7 @@ router.route('/')
 
         MongoClient.connect(url, function(err, db) {
             if (err) {
-                res.status(500).send({ "error" : "Internal Server Error" });
+                res.status(500).send({ "error" : "Internal Server Error", "message" : err.toString() });
             }
 
             var collection = db.collection('exercises');
@@ -203,20 +203,19 @@ router.route('/')
                 collection.findOne({ '_id': ObjectID(req.params.id) }, function(err, result) {
                     
                     if (err) {
-                        res.status(500).send({ "error" : "Internal Server Error" });
+                        res.status(500).send({ "error" : "Internal Server Error", "message" : err.toString() });
                     } else if (result === null) {
                         res.status(404).send({ "error": "Exercise Not Found" });
                     } else {
                         res.status(200); 
                         res.json(result);
                     }
+                    db.close();
                 });
             } catch (e) {
                 res.status(400).send({ "error" : "Bad Request" });
-            } finally {
                 db.close();
-            }
-            
+            } 
         });
     })
 
@@ -269,12 +268,12 @@ router.route('/')
             try {
                 collection.update({ '_id': ObjectID(req.params.id)}, { $set : req.body }, function(err, result) {
                     res.status(201).send({ "message" : "Exercise edited" });
+                    db.close();
                 });
             } catch (e) {
                 res.status(400).send({ "error" : "Bad Request" });
-            } finally {
                 db.close();
-            }
+            } 
         });
     })
 
@@ -312,13 +311,13 @@ router.route('/')
             try {
                 collection.remove({ "_id" : ObjectID(req.params.id) }, function(err, result) {
                     res.status(204).send( { "message" : "Exercise deleted" });
+                    db.close();
                 });
             } catch(e) {
                 res.status(400).send({ "error" : "Bad Request" });
-            } finally {
                 db.close();
             }
         });
     });
 
-     module.exports = router;
+module.exports = router;

@@ -12,5 +12,8 @@
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "mongodb": "^2.0.45"
+  },
+  "devDependencies": {
+    "password-hash": "^1.2.2"
   }
 }
