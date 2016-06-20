@@ -503,6 +503,197 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/users/email/plans",
+    "title": "Create Plan",
+    "name": "CreatePlan",
+    "group": "Plans",
+    "version": "0.0.3",
+    "description": "<p>This request creates a new plan for the user with specified email.</p>",
+    "parameter": {
+      "fields": {
+        "Requested Fields": [
+          {
+            "group": "Requested Fields",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the Plan.</p>"
+          },
+          {
+            "group": "Requested Fields",
+            "type": "Array",
+            "optional": false,
+            "field": "schedule",
+            "description": "<p>Array of <strong>Exercise</strong> objects that contain the exercise id and an extra field named &quot;repeat&quot; specifying the number of times the exercise must be performed</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Body:",
+          "content": "{\n      \"name\" : \"Exercise Plan 1\",\n      \"schedule\" : [\n          {\n              \"_id\" : \"574c0f79ea374e0300ba0cb1\",\n              \"repeat\" : 2\n          },\n          {\n              \"_id\" : \"574ec93479ac100300495e2f\",\n              \"repeat\" : 3\n          }\n      ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      }
+    },
+    "filename": "routes/plans.js",
+    "groupTitle": "Plans"
+  },
+  {
+    "type": "delete",
+    "url": "/users/email/plans/id",
+    "title": "Delete Plan",
+    "name": "DeletePlan",
+    "group": "Plans",
+    "version": "0.0.3",
+    "description": "<p>This request deletes from user with specified email an existing plan with the _id parameter from the request URL.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "ObjectId",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Plans unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 2xx": [
+          {
+            "group": "Success 2xx",
+            "optional": false,
+            "field": "204",
+            "description": "<p>No Content</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 204 No Content\n{ \n    \"message\" : \"Plan deleted\" \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "404",
+            "description": "<p>Plan Not Found</p>"
+          }
+        ],
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      }
+    },
+    "filename": "routes/plans.js",
+    "groupTitle": "Plans"
+  },
+  {
+    "type": "get",
+    "url": "/users/email/plans",
+    "title": "Request all Plans",
+    "name": "GetAllPlans",
+    "group": "Plans",
+    "version": "0.0.3",
+    "description": "<p>This request returns all plans created by the user with specified email.</p>",
+    "success": {
+      "fields": {
+        "Plan Fields": [
+          {
+            "group": "Plan Fields",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique Mongo generated id of the Plan.</p>"
+          },
+          {
+            "group": "Plan Fields",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Unique Email of user that created the Plan.</p>"
+          },
+          {
+            "group": "Plan Fields",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the Plan.</p>"
+          },
+          {
+            "group": "Plan Fields",
+            "type": "Number",
+            "optional": false,
+            "field": "total_duration",
+            "description": "<p>Total amount of time measured in minutes that the Plan takes.</p>"
+          },
+          {
+            "group": "Plan Fields",
+            "type": "Number",
+            "optional": false,
+            "field": "total_burntQ",
+            "description": "<p>Total Number of calories burnt by performing the Exercise.</p>"
+          },
+          {
+            "group": "Plan Fields",
+            "type": "Array",
+            "optional": false,
+            "field": "schedule",
+            "description": "<p>Array of <strong>Exercise</strong> objects (see documentation for Exercises) that contain an extra field named &quot;repeat&quot; specifying the number of times the exercise must be performed</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        _id: \"ab3ec098234f5601f611322b\",\n        email : \"mail2@example.com\",\n        name: \"Exercise Plan 1\",\n        total_duration: 21,\n        total_burntQ: 9368,\n        schedule : [\n            {\n                _id: \"573ec098e85f5601f611322b\",\n                name: \"Push Up\",\n                duration: 3,\n                equipment: [\n                    \"steady floor\"\n                ],\n                burntQ: 1234,\n                repeat: 2\n            },\n            {\n                _id: \"573ec075e85f5601f611322a\",\n                name: \"Rope Jump\",\n                duration: 5,\n                equipment: [\n                    \"steady floor\",\n                    \"jumping rope\",\n                    \"jumping sneakers\"\n                ],\n                burntQ: 2300,\n                repeat: 3\n            }\n        ]\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 5xx": [
+          {
+            "group": "Error 5xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error</p>"
+          }
+        ]
+      }
+    },
+    "filename": "routes/plans.js",
+    "groupTitle": "Plans"
+  },
+  {
+    "type": "post",
     "url": "/users",
     "title": "Create User",
     "name": "CreateUser",

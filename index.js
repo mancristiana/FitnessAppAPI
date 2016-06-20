@@ -37,6 +37,6 @@ app.all(function(error, req, res, next) {
 // For specified path use required modules
 app.use('/api/users/', users);
 app.use('/api/exercises/', exercises);
-app.use('/api/users/:user_id/plans', plans);
+app.use('/api/', plans);
 
 app.listen(process.env.PORT || 3000);
