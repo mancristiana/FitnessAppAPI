@@ -8,7 +8,7 @@ var users = require('./routes/users.js');
 var exercises = require('./routes/exercises.js');
 var plans = require('./routes/plans.js');
 
-// Access-Control error fix http://stackoverflow.com/questions/18310394/no-access-control-allow-origin-node-apache-port-issue
+// CORS Cross-Origin Resource Sharing
 app.all('/*', function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');

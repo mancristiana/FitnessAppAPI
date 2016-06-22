@@ -89,6 +89,7 @@ router.route('/users/:email/plans')
                     result.forEach(function(productItem, productIndex, productArray) { // FOR EACH PRODUCT
                         var plan = {};
                         plan._id = productItem._id;
+                        plan.name = productItem.name;
                         plan.email = productItem.email;
                         plan.total_duration = 0;
                         plan.total_burntQ = 0;
